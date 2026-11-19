@@ -1,0 +1,3821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Invitación Selva Tropical Río 🦜🌴🎉</title>
+
+  <!-- Google Fonts: Fredoka, Baloo 2 y Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Estilos personalizados: Selva Verde Río, transición al video, nombre 3D escalable, sobre 3D y velitas -->
+  <style>
+    :root {
+      --jungle-deep: #052616;
+      --jungle-mid: #0b4a2b;
+      --jungle-emerald: #117040;
+      --jungle-bright: #19a35a;
+      --rio-gold: #ffd426;
+      --rio-coral: #ff622e;
+      --rio-turquoise: #00d4c8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', sans-serif;
+      background-color: #ecfdf3;
+      color: #092c1b;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .font-fredoka { font-family: 'Fredoka', cursive, sans-serif; }
+    .font-baloo { font-family: 'Baloo 2', cursive, sans-serif; }
+    .font-nunito { font-family: 'Nunito', sans-serif; }
+
+    /* Canvas global para confeti y fuegos artificiales */
+    #fx-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 120;
+    }
+
+    /* Sliders táctiles temáticos */
+    input[type="range"].jungle-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #a7f3d0, #34d399);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"].jungle-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(5, 38, 22, 0.35);
+      cursor: pointer;
+      transition: transform 0.14s ease;
+    }
+    input[type="range"].jungle-slider::-webkit-slider-thumb:active {
+      transform: scale(1.18);
+    }
+    input[type="range"].jungle-slider::-moz-range-thumb {
+      width: 21px;
+      height: 21px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(5, 38, 22, 0.35);
+      cursor: pointer;
+    }
+
+    /* =====================================================================
+       TARJETA PRINCIPAL: SELVA VERDE TROPICAL ESTILO "RÍO"
+       ===================================================================== */
+    .rio-card {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #062b19;
+      box-shadow: 0 24px 60px rgba(3, 27, 15, 0.52), 0 0 0 3px rgba(255, 212, 38, 0.35);
+      border-radius: 28px;
+      user-select: none;
+      transition: max-width 0.3s ease;
+
+      /* Variables CSS actualizadas en tiempo real sin recargar ni parpadear el video */
+      --name-size: 38px;
+      --name-stroke: 2.2px;
+      --video-height: 220px;
+      --video-scale: 1;
+      --video-posy: 50%;
+      --video-fit: cover;
+      --chars-size: 92%;
+      --chars-x: 0px;
+      --chars-y: 0px;
+      --photo-size: 112px;
+      --photo-zoom: 1;
+      --photo-posy: 50%;
+    }
+
+    /* Formatos seleccionables: 9:16 Vertical, 1:1 Cuadrada, Postal Horizontal */
+    .rio-card.format-9-16 {
+      max-width: 416px;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rio-card.format-1-1 {
+      max-width: 520px;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rio-card.format-postal {
+      max-width: 860px;
+      min-height: 510px;
+      display: grid;
+      grid-template-columns: 1.03fr 0.97fr;
+      background: linear-gradient(135deg, #0d5430 0%, #062918 100%);
+    }
+    @media (max-width: 740px) {
+      .rio-card.format-postal {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+      }
+    }
+
+    /* Columna visual (izquierda en postal, superior en vertical/cuadrada) */
+    .rio-visual-col {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: #07331d;
+    }
+
+    /* Zona superior del video en bucle */
+    .rio-video-header {
+      position: relative;
+      width: 100%;
+      height: var(--video-height);
+      overflow: hidden;
+      background: linear-gradient(180deg, #1b9aaa 0%, #52d1a0 65%, #0e5932 100%);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .rio-header-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: var(--video-fit);
+      object-position: 50% var(--video-posy);
+      transform: scale(var(--video-scale));
+      transform-origin: center center;
+      z-index: 2;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    /* DEGRADADO TRANSPARENTE -> SELVA VERDE (fusión orgánica sin cortes bruscos) */
+    .rio-video-fade-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 58%;
+      background: linear-gradient(
+        180deg,
+        rgba(10, 74, 41, 0) 0%,
+        rgba(10, 74, 41, 0.18) 32%,
+        rgba(10, 74, 41, 0.62) 66%,
+        rgba(9, 64, 36, 0.96) 92%,
+        #094024 100%
+      );
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Cuerpo principal de selva tropical verde */
+    .rio-jungle-body {
+      position: relative;
+      flex: 1;
+      margin-top: -54px;
+      padding-top: 26px;
+      z-index: 6;
+      background: linear-gradient(
+        180deg,
+        rgba(9, 64, 36, 0) 0px,
+        rgba(11, 78, 43, 0.82) 48px,
+        #0d5d33 130px,
+        #094526 52%,
+        #062d19 85%,
+        #041f11 100%
+      );
+    }
+
+    /* En formato postal, la columna derecha continúa el ambiente de selva verde */
+    .rio-card.format-postal .rio-info-col {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px 20px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(163, 230, 53, 0.16) 0%, transparent 50%),
+        linear-gradient(180deg, #0e5e34 0%, #094325 55%, #052616 100%);
+      border-left: 1.5px solid rgba(167, 243, 208, 0.18);
+      overflow: hidden;
+    }
+
+    /* Capas decorativas de selva verde SVG (árboles, hojas, lianas, aves, flores) */
+    .jungle-backdrop-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* Destello cálido de luz tropical filtrándose entre el follaje */
+    .jungle-sunbeam {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 260px;
+      background: radial-gradient(ellipse at 50% 25%, rgba(254, 240, 138, 0.24) 0%, rgba(74, 222, 128, 0.12) 45%, rgba(9, 64, 36, 0) 75%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Animaciones suaves de naturaleza tropical */
+    @keyframes flyLeftToRight {
+      0%   { transform: translate(-70px, 14px) scale(0.74); opacity: 0; }
+      10%  { opacity: 1; }
+      50%  { transform: translate(195px, -14px) scale(0.96); opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translate(450px, 8px) scale(0.7); opacity: 0; }
+    }
+    @keyframes flyRightToLeft {
+      0%   { transform: translate(450px, 20px) scaleX(-1) scale(0.7); opacity: 0; }
+      12%  { opacity: 1; }
+      50%  { transform: translate(195px, -12px) scaleX(-1) scale(0.92); opacity: 1; }
+      88%  { opacity: 1; }
+      100% { transform: translate(-80px, 10px) scaleX(-1) scale(0.66); opacity: 0; }
+    }
+    @keyframes wingFlap {
+      0%, 100% { transform: scaleY(1); }
+      50%      { transform: scaleY(0.32); }
+    }
+    @keyframes leafSway {
+      0%, 100% { transform: rotate(-2.8deg); }
+      50%      { transform: rotate(3.6deg); }
+    }
+    @keyframes vineSway {
+      0%, 100% { transform: rotate(-2deg); }
+      50%      { transform: rotate(2.5deg); }
+    }
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0px); }
+      50%      { transform: translateY(-5px); }
+    }
+    @keyframes fireflyGlow {
+      0%, 100% { opacity: 0.22; transform: scale(0.85); }
+      50%      { opacity: 0.9; transform: scale(1.25); }
+    }
+
+    .bird-flight-1 { animation: flyLeftToRight 9.5s linear infinite; }
+    .bird-flight-2 { animation: flyRightToLeft 11.8s linear infinite 1.6s; }
+    .bird-flight-3 { animation: flyLeftToRight 13.2s linear infinite 4.2s; }
+    .bird-flight-4 { animation: flyRightToLeft 8.9s linear infinite 6s; }
+    .bird-wings { transform-origin: center; animation: wingFlap 0.4s ease-in-out infinite; }
+    .jungle-leaf-left { transform-origin: 0% 45%; animation: leafSway 5.2s ease-in-out infinite; }
+    .jungle-leaf-right { transform-origin: 100% 45%; animation: leafSway 5.8s ease-in-out infinite reverse; }
+    .jungle-vine { transform-origin: top center; animation: vineSway 6.2s ease-in-out infinite; }
+    .firefly-dot { animation: fireflyGlow 3.2s ease-in-out infinite; }
+
+    /* =====================================================================
+       BLOQUE DEL CUMPLEAÑERO (ENTRE EL VIDEO Y LOS PERSONAJES)
+       ===================================================================== */
+    .kid-hero-header {
+      position: relative;
+      z-index: 14;
+      text-align: center;
+      padding: 6px 12px 4px;
+    }
+
+    .kid-festive-subtitle {
+      display: inline-block;
+      font-family: 'Fredoka', cursive;
+      font-weight: 700;
+      font-size: clamp(0.88rem, 3.4vw, 1.06rem);
+      color: #fef9c3;
+      background: rgba(4, 35, 19, 0.58);
+      border: 1.5px solid rgba(254, 240, 138, 0.45);
+      backdrop-filter: blur(4px);
+      padding: 4px 16px;
+      border-radius: 9999px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 12px rgba(3, 24, 13, 0.35);
+      margin-bottom: 5px;
+    }
+
+    /* Nombre del cumpleañero/a en tipografía 3D escalable (16px a 68px) */
+    .kid-name-3d {
+      display: block;
+      font-family: 'Fredoka', 'Baloo 2', cursive, sans-serif;
+      font-weight: 700;
+      font-size: var(--name-size);
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      margin: 2px auto 8px;
+      padding: 2px 4px;
+      filter: drop-shadow(0 6px 12px rgba(2, 22, 11, 0.52));
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Modo "Mantener en 1 sola línea" para nombres largos */
+    .kid-name-3d.no-wrap {
+      white-space: nowrap;
+      word-break: normal;
+      overflow-wrap: normal;
+    }
+
+    .kid-name-space {
+      display: inline-block;
+      width: 0.28em;
+    }
+
+    .kid-name-letter {
+      display: inline-block;
+      -webkit-text-stroke: var(--name-stroke) #052e16;
+      paint-order: stroke fill;
+      text-shadow:
+        0 0.06em 0 #052e16,
+        0 0.125em 0 #021c0d,
+        0 0.2em 0.32em rgba(0, 0, 0, 0.42);
+      animation: floatGentle 3.5s ease-in-out infinite;
+    }
+    .kid-name-letter:nth-child(4n+1) { color: #ffda29; transform: rotate(-2.5deg); animation-delay: 0s; }
+    .kid-name-letter:nth-child(4n+2) { color: #22e3d5; transform: rotate(2.2deg) translateY(-0.04em); animation-delay: 0.2s; }
+    .kid-name-letter:nth-child(4n+3) { color: #ff7a33; transform: rotate(-1.8deg); animation-delay: 0.4s; }
+    .kid-name-letter:nth-child(4n+4) { color: #a3f74d; transform: rotate(2.5deg) translateY(-0.02em); animation-delay: 0.6s; }
+
+    /* Cinta / insignia alegre de la edad */
+    .kid-age-ribbon {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 5px 24px 6px;
+      background: linear-gradient(90deg, #ff5e1a 0%, #ff9914 50%, #ff5e1a 100%);
+      color: #ffffff;
+      font-family: 'Fredoka', cursive;
+      font-weight: 700;
+      font-size: clamp(1.08rem, 4.3vw, 1.38rem);
+      border-radius: 9999px;
+      border: 2.5px solid #fef08a;
+      box-shadow: 0 7px 18px rgba(3, 24, 13, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.35);
+      text-shadow: 0 2px 4px rgba(92, 24, 0, 0.55);
+      transform: rotate(-1.2deg);
+    }
+
+    /* =====================================================================
+       IMAGEN PRINCIPAL DE PERSONAJES (DEBAJO DEL BLOQUE DEL CUMPLEAÑERO)
+       ===================================================================== */
+    .rio-chars-stage {
+      position: relative;
+      z-index: 10;
+      min-height: 175px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 6px 10px 4px;
+      overflow: visible;
+    }
+
+    .rio-chars-media-wrap {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      width: var(--chars-size);
+      transform: translate(var(--chars-x), var(--chars-y));
+      flex-shrink: 0;
+      will-change: transform, width;
+      pointer-events: none;
+    }
+
+    .rio-custom-chars-img {
+      width: 100%;
+      height: auto;
+      max-width: none;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 12px 20px rgba(2, 22, 11, 0.55));
+    }
+
+    /* =====================================================================
+       MARCO TROPICAL OPCIONAL PARA FOTO DEL CUMPLEAÑERO
+       ===================================================================== */
+    .rio-photo-section {
+      position: relative;
+      z-index: 12;
+      display: flex;
+      justify-content: center;
+      padding: 6px 12px 10px;
+    }
+
+    .rio-photo-frame {
+      position: relative;
+      width: var(--photo-size);
+      height: var(--photo-size);
+      padding: 5px;
+      background: linear-gradient(135deg, #ffd426, #ff622e, #00d4c8, #34d399);
+      box-shadow: 0 12px 26px rgba(3, 24, 13, 0.55), 0 0 0 2px rgba(255, 255, 255, 0.35);
+      overflow: visible;
+      flex-shrink: 0;
+    }
+    .rio-photo-inner {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #062b19;
+    }
+    .rio-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% var(--photo-posy);
+      transform: scale(var(--photo-zoom));
+      transform-origin: center center;
+      display: block;
+      will-change: transform;
+    }
+
+    .rio-photo-frame.frame-circle { border-radius: 9999px; }
+    .rio-photo-frame.frame-circle .rio-photo-inner { border-radius: 9999px; }
+
+    .rio-photo-frame.frame-rounded { border-radius: 24px; }
+    .rio-photo-frame.frame-rounded .rio-photo-inner { border-radius: 19px; }
+
+    .rio-photo-frame.frame-polaroid {
+      height: calc(var(--photo-size) * 1.15);
+      background: #ffffff;
+      padding: 6px 6px 22px 6px;
+      border-radius: 12px;
+      transform: rotate(2.5deg);
+    }
+    .rio-photo-frame.frame-polaroid .rio-photo-inner { border-radius: 7px; }
+
+    /* =====================================================================
+       SECCIÓN DE DETALLES, CUENTA REGRESIVA Y BARRA 3 COLUMNAS
+       ===================================================================== */
+    .rio-details-content {
+      position: relative;
+      z-index: 12;
+      padding: 4px 16px 20px;
+      color: #ffffff;
+    }
+
+    .rio-info-bar {
+      display: grid;
+      grid-template-columns: 1fr 1.38fr 1fr;
+      align-items: center;
+      text-align: center;
+      margin: 12px 0 14px;
+      padding: 10px 4px;
+      background: rgba(4, 31, 17, 0.5);
+      border: 1.5px solid rgba(167, 243, 208, 0.22);
+      border-radius: 18px;
+      backdrop-filter: blur(4px);
+    }
+    .rio-info-col-item { padding: 2px 6px; }
+    .rio-info-col-mid {
+      border-left: 1.5px dashed rgba(254, 240, 138, 0.55);
+      border-right: 1.5px dashed rgba(254, 240, 138, 0.55);
+      padding: 2px 8px;
+    }
+
+    @keyframes popInUp {
+      0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-card-enter {
+      animation: popInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* =====================================================================
+       PANTALLA 1: SOBRE 3D ANIMADO (TEMÁTICA SELVA TROPICAL RÍO)
+       ===================================================================== */
+    .envelope-stage {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background: radial-gradient(circle at 25% 15%, #168049 0%, #094526 48%, #041d10 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 286px;
+      height: 196px;
+      cursor: pointer;
+      perspective: 1000px;
+      animation: floatGentle 3.2s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+    .envelope-wrapper:hover { transform: scale(1.03); }
+
+    .envelope-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #ffd426 0%, #ff9514 100%);
+      border-radius: 18px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.48), inset 0 2px 6px rgba(255, 255, 255, 0.5);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .envelope-letter {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 12px;
+      height: 158px;
+      background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%);
+      border-radius: 14px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2.5px solid #10b981;
+    }
+
+    .envelope-front-pocket {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      border-radius: 18px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .envelope-front-pocket::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #10b981 0%, #047857 100%);
+      clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+    }
+    .envelope-front-pocket::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #059669 0%, #064e3b 100%);
+      clip-path: polygon(0 100%, 50% 48%, 100% 100%);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 110px;
+      background: linear-gradient(180deg, #ff6b24 0%, #ffb41a 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s;
+      z-index: 5;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
+    }
+
+    .envelope-seal {
+      position: absolute;
+      top: 78px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 30%, #ffe65c, #ff8c00);
+      border: 3px solid #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      transition: transform 0.4s ease, opacity 0.35s ease;
+    }
+
+    .envelope-wrapper.opened { animation: none; }
+    .envelope-wrapper.opened .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+    .envelope-wrapper.opened .envelope-seal { transform: translateX(-50%) scale(1.4); opacity: 0; }
+    .envelope-wrapper.opened .envelope-letter { transform: translateY(-78px); }
+
+    @keyframes pulseBtn {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 212, 38, 0.72); }
+      50%      { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(255, 212, 38, 0); }
+    }
+    .btn-pulse-rio { animation: pulseBtn 2s infinite; }
+
+    /* =====================================================================
+       PANTALLA 3: PASTEL INTERACTIVO — APAGADO REAL DE LAS 5 VELITAS
+       ===================================================================== */
+    @keyframes candleFlicker {
+      0%, 100% { transform: translateX(-50%) scale(1, 1) rotate(-2.5deg); }
+      25%      { transform: translateX(-50%) scale(1.07, 0.94) rotate(2.5deg); }
+      50%      { transform: translateX(-50%) scale(0.95, 1.09) rotate(-2deg); }
+      75%      { transform: translateX(-50%) scale(1.04, 0.97) rotate(2deg); }
+    }
+
+    @keyframes candleHalo {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+      50%      { transform: translateX(-50%) scale(1.18); opacity: 1; }
+    }
+
+    @keyframes smokeRiseA {
+      0%   { opacity: 0; transform: translate(-50%, 6px) scale(0.45); }
+      20%  { opacity: 0.92; transform: translate(-40%, -12px) scale(0.95); }
+      60%  { opacity: 0.6; transform: translate(-68%, -38px) scale(1.55); }
+      100% { opacity: 0; transform: translate(-32%, -74px) scale(2.2); }
+    }
+
+    @keyframes smokeRiseB {
+      0%   { opacity: 0; transform: translate(-50%, 4px) scale(0.35); }
+      25%  { opacity: 0.82; transform: translate(-64%, -16px) scale(0.85); }
+      68%  { opacity: 0.48; transform: translate(-34%, -46px) scale(1.4); }
+      100% { opacity: 0; transform: translate(-66%, -82px) scale(2.05); }
+    }
+
+    .candle-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      width: 48px;
+      height: 100px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+      touch-action: manipulation;
+      transition: transform 0.12s ease;
+    }
+    .candle-btn:active { transform: scale(0.92); }
+
+    .candle-btn .candle-glow {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(255, 232, 117, 0.92) 0%, rgba(255, 138, 0, 0.45) 48%, rgba(255, 94, 0, 0) 76%);
+      transform: translateX(-50%);
+      pointer-events: none;
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+
+    .candle-btn .candle-flame {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      width: 21px;
+      height: 32px;
+      background: radial-gradient(ellipse at 50% 72%, #ffffff 0%, #fff48c 32%, #ff9900 68%, #ff3b00 100%);
+      border-radius: 50% 50% 50% 50% / 66% 66% 34% 34%;
+      box-shadow: 0 0 14px 2px rgba(255, 196, 0, 0.88);
+      transform-origin: bottom center;
+      transform: translateX(-50%);
+      pointer-events: none;
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+
+    .candle-btn .candle-flame::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 13px;
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      background: #ffffff;
+    }
+
+    /* Animación solo cuando la vela NO está apagada */
+    .candle-btn:not(.extinguished) .candle-flame {
+      animation: candleFlicker 0.56s ease-in-out infinite;
+    }
+    .candle-btn:not(.extinguished) .candle-glow {
+      animation: candleHalo 0.85s ease-in-out infinite;
+    }
+
+    /* APAGADO DEFINITIVO: desaparece por completo sin conflictos */
+    .candle-btn.extinguished .candle-flame,
+    .candle-btn.extinguished .candle-glow {
+      animation: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      display: none !important;
+      transform: translateX(-50%) scale(0) !important;
+      pointer-events: none !important;
+    }
+
+    /* Humo ascendente */
+    .candle-btn .candle-smoke {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+    .candle-btn .smoke-puff {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      background: rgba(236, 253, 245, 0.9);
+      filter: blur(2.5px);
+      opacity: 0;
+    }
+    .candle-btn .smoke-puff.puff-b {
+      width: 11px;
+      height: 11px;
+      background: rgba(203, 213, 225, 0.85);
+    }
+    .candle-btn.extinguished .smoke-puff.puff-a {
+      animation: smokeRiseA 1.25s ease-out forwards;
+    }
+    .candle-btn.extinguished .smoke-puff.puff-b {
+      animation: smokeRiseB 1.35s ease-out 0.12s forwards;
+    }
+
+    /* Mecha */
+    .candle-btn .candle-wick {
+      width: 3.5px;
+      height: 10px;
+      background: #3f2e21;
+      border-radius: 2px;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 2;
+      transition: background-color 0.18s ease;
+    }
+    .candle-btn.extinguished .candle-wick {
+      background: #1f2937;
+      box-shadow: 0 -1px 3px rgba(148, 163, 184, 0.45);
+    }
+
+    /* Cuerpo festivo de cada vela */
+    .candle-btn .candle-stick {
+      width: 20px;
+      height: 48px;
+      border-radius: 7px 7px 2px 2px;
+      background: repeating-linear-gradient(-45deg, #00c4ff, #00c4ff 6px, #ffffff 6px, #ffffff 12px);
+      box-shadow: inset -3px 0 6px rgba(0, 0, 0, 0.22), 0 3px 6px rgba(0, 0, 0, 0.28);
+    }
+    .candle-btn:nth-child(2) .candle-stick {
+      background: repeating-linear-gradient(-45deg, #ff622e, #ff622e 6px, #fef08a 6px, #fef08a 12px);
+    }
+    .candle-btn:nth-child(3) .candle-stick {
+      background: repeating-linear-gradient(-45deg, #10b981, #10b981 6px, #ffffff 6px, #ffffff 12px);
+    }
+    .candle-btn:nth-child(4) .candle-stick {
+      background: repeating-linear-gradient(-45deg, #ec4899, #ec4899 6px, #fef08a 6px, #fef08a 12px);
+    }
+    .candle-btn:nth-child(5) .candle-stick {
+      background: repeating-linear-gradient(-45deg, #f59e0b, #f59e0b 6px, #ecfdf5 6px, #ecfdf5 12px);
+    }
+
+    /* Scrollbar y notificaciones Toast */
+    .editor-scroll::-webkit-scrollbar { width: 7px; }
+    .editor-scroll::-webkit-scrollbar-track { background: transparent; }
+    .editor-scroll::-webkit-scrollbar-thumb { background: #a7f3d0; border-radius: 9999px; }
+    .editor-scroll::-webkit-scrollbar-thumb:hover { background: #34d399; }
+
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 140;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+      width: max-content;
+      max-width: 92vw;
+    }
+    .rio-toast {
+      background: #06351e;
+      color: #ffffff;
+      border: 2px solid #ffd426;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      animation: popInUp 0.25s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body class="bg-emerald-50/70 text-emerald-950 antialiased">
+
+  <!-- Canvas global para confeti y fuegos artificiales -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- Notificaciones Toast (sin alert ni confirm) -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Audio exclusivo de la canción cargada por el usuario o musica.mp3 -->
+  <audio id="bg-music-audio" loop preload="auto"></audio>
+
+  <!-- =====================================================================
+       MODO EDITOR (ADAPTABLE A CELULAR Y PC/TABLET — SIN MÓDULO 4)
+       ===================================================================== -->
+  <div id="editor-view" class="hidden min-h-screen flex flex-col">
+
+    <!-- Barra superior fija -->
+    <header class="sticky top-0 z-40 bg-gradient-to-r from-[#052e19] via-[#0a522e] to-[#0f7643] text-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 flex items-center justify-center text-2xl shadow-md border-2 border-white/80">
+            🦜
+          </div>
+          <div>
+            <h1 class="font-baloo font-extrabold text-lg sm:text-xl leading-tight tracking-tight">
+              Invitaciones Selva <span class="text-yellow-300">Río</span>
+            </h1>
+            <p class="text-[11px] sm:text-xs text-emerald-100 font-semibold leading-none">
+              Creador interactivo • Autoguardado local &amp; WhatsApp
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="btn-header-test-envelope"
+            class="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-[#052e19] font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-xl shadow transition active:scale-95">
+            ✉️ <span class="hidden sm:inline">Probar sobre</span><span class="sm:hidden">Sobre</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2 pestañas fijas arriba en celular (< 1024px) -->
+      <div class="lg:hidden grid grid-cols-2 border-t border-white/15 bg-[#042414]/90 backdrop-blur">
+        <button type="button" id="mobile-tab-edit"
+          class="py-2.5 text-sm font-extrabold text-yellow-300 border-b-4 border-yellow-300 transition flex items-center justify-center gap-1.5">
+          ✏️ Editar
+        </button>
+        <button type="button" id="mobile-tab-preview"
+          class="py-2.5 text-sm font-bold text-emerald-200 border-b-4 border-transparent transition flex items-center justify-center gap-1.5">
+          👀 Vista Previa
+        </button>
+      </div>
+    </header>
+
+    <!-- Layout adaptable: 1 columna con pestañas en móvil / 2 columnas en PC y tablet -->
+    <main class="flex-1 max-w-7xl w-full mx-auto lg:grid lg:grid-cols-12 lg:gap-6 lg:px-4 lg:py-5">
+
+      <!-- COLUMNA IZQUIERDA: CONTROLES DEL EDITOR -->
+      <section id="editor-controls-panel" class="lg:col-span-5 p-3 sm:p-4 lg:p-0 space-y-4 lg:max-h-[calc(100vh-88px)] lg:overflow-y-auto editor-scroll lg:pr-2">
+
+        <!-- SECCIÓN 1: DATOS DE LA FIESTA -->
+        <details open class="group bg-white rounded-3xl shadow-md border border-emerald-100 overflow-hidden">
+          <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none bg-gradient-to-r from-emerald-50 to-white hover:from-emerald-100/70 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-baloo font-extrabold flex items-center justify-center text-sm shadow-sm">1</span>
+              <div>
+                <h2 class="font-baloo font-extrabold text-base text-[#052e19] leading-tight">🌴 Datos de la Fiesta</h2>
+                <p class="text-xs text-slate-500 font-semibold">Subtítulo, cumpleañero, tamaño del nombre, fecha y lugar</p>
+              </div>
+            </div>
+            <span class="text-emerald-600 font-bold text-lg group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+
+          <div class="p-4 sm:p-5 space-y-3.5 border-t border-emerald-100/70">
+            <div>
+              <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Subtítulo festivo (arriba del nombre)</label>
+              <input id="inp-subtitle" type="text" placeholder="Ej. ¡A volar y bailar en mi cumple!"
+                class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+            </div>
+
+            <!-- Nombre del cumpleañero/a + Control de tamaño de letra (16px a 68px) -->
+            <div class="space-y-2">
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Nombre del cumpleañero/a</label>
+                <input id="inp-kid-name" type="text" placeholder="Ej. Gabriel Alejandro"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+              </div>
+
+              <!-- Control de tamaño de letra del nombre + Mantener en 1 sola línea + Restablecer -->
+              <div class="p-3 rounded-2xl bg-emerald-50/85 border border-emerald-200 space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-extrabold text-[#052e19]">🔤 Tamaño de letra del nombre</span>
+                  <div class="flex items-center gap-2">
+                    <span id="val-name-size" class="text-xs font-extrabold text-emerald-800 bg-white px-2 py-0.5 rounded-lg border border-emerald-200">38px</span>
+                    <button type="button" id="btn-reset-name-size" class="text-[11px] font-extrabold text-emerald-700 hover:underline">↺ Restablecer</button>
+                  </div>
+                </div>
+
+                <input id="rng-name-size" type="range" min="16" max="68" step="1" value="38" class="jungle-slider" aria-label="Tamaño de letra del nombre del cumpleañero" />
+
+                <div class="flex items-center justify-between gap-2 pt-0.5">
+                  <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                    <input id="chk-name-nowrap" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded" />
+                    <span class="text-xs font-extrabold text-slate-700">Mantener en 1 sola línea</span>
+                  </label>
+                  <span class="text-[10px] font-bold text-slate-500">16px – 68px</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Edad que cumple</label>
+              <input id="inp-kid-age" type="text" placeholder="Ej. ¡Cumple 5 Años!"
+                class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Fecha</label>
+                <input id="inp-date" type="date"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3 py-2.5 text-sm font-bold text-slate-800" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Hora</label>
+                <input id="inp-time" type="time"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3 py-2.5 text-sm font-bold text-slate-800" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Nombre del lugar</label>
+              <input id="inp-place" type="text" placeholder="Ej. En mi casa / Salón Selva"
+                class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Enlace Google Maps</label>
+                <input id="inp-maps" type="url" placeholder="https://maps.app.goo.gl/..."
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-semibold text-slate-700" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">WhatsApp p/ Confirmar</label>
+                <input id="inp-whatsapp" type="tel" placeholder="Ej. 584121234567"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-extrabold text-emerald-800 uppercase tracking-wide">Mensaje / Dedicatoria</label>
+                <button type="button" id="btn-idea-msg"
+                  class="inline-flex items-center gap-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-extrabold text-xs px-2.5 py-1 rounded-full transition active:scale-95">
+                  💡 Idea de mensaje
+                </button>
+              </div>
+              <textarea id="inp-message" rows="2" placeholder="Escribe un mensaje tropical lleno de alegría..."
+                class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2 text-sm font-semibold text-slate-700 resize-none"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <!-- SECCIÓN 2: FORMATO, MULTIMEDIA NIVEL 2 Y AJUSTES EN VIVO -->
+        <details open class="group bg-white rounded-3xl shadow-md border border-emerald-100 overflow-hidden">
+          <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none bg-gradient-to-r from-amber-50/80 to-white hover:from-amber-100/60 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-baloo font-extrabold flex items-center justify-center text-sm shadow-sm">2</span>
+              <div>
+                <h2 class="font-baloo font-extrabold text-base text-[#052e19] leading-tight">🎬 Formato y Multimedia</h2>
+                <p class="text-xs text-slate-500 font-semibold">Tamaño, video mudo, personajes, foto y canción</p>
+              </div>
+            </div>
+            <span class="text-amber-600 font-bold text-lg group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+
+          <div class="p-4 sm:p-5 space-y-4 border-t border-emerald-100/70">
+
+            <!-- Selector de formato -->
+            <div>
+              <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-2">Formato de la tarjeta</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" data-format="9-16" class="format-choice-btn p-2.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50 text-emerald-900 font-extrabold text-xs flex flex-col items-center gap-1 transition">
+                  <span class="text-lg">📱</span>
+                  <span>9:16 Vertical</span>
+                </button>
+                <button type="button" data-format="1-1" class="format-choice-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-1 transition">
+                  <span class="text-lg">🟦</span>
+                  <span>1:1 Cuadrado</span>
+                </button>
+                <button type="button" data-format="postal" class="format-choice-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-1 transition">
+                  <span class="text-lg">🖼️</span>
+                  <span>Horizontal</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2A. VIDEO SUPERIOR (Siempre en bucle y siempre mudo) -->
+            <div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-[#052e19]">🎥 Video superior <code class="text-emerald-800 bg-white px-1.5 py-0.5 rounded border border-emerald-200">video.mp4</code></div>
+                  <div id="status-video" class="text-[11px] font-bold text-emerald-700 mt-0.5">Escena animada tropical integrada (bucle infinito y sin audio)</div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition active:scale-95">
+                    Cargar
+                    <input id="file-video" type="file" accept="video/mp4,video/webm,video/quicktime" class="hidden" />
+                  </label>
+                  <button type="button" id="btn-clear-video" title="Quitar video" class="hidden bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-extrabold px-2 py-1.5 rounded-xl">✕</button>
+                </div>
+              </div>
+
+              <div class="bg-white/95 rounded-xl p-3 border border-emerald-100 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-extrabold text-slate-600 uppercase">Ajustes del encabezado / video</span>
+                  <button type="button" id="btn-reset-video" class="text-[11px] font-extrabold text-emerald-700 hover:underline">↺ Restablecer</button>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Altura del encabezado</span>
+                    <span id="val-video-height" class="text-emerald-700 font-extrabold">220px</span>
+                  </div>
+                  <input id="rng-video-height" type="range" min="120" max="420" step="2" value="220" class="jungle-slider" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Zoom / Escala del video</span>
+                    <span id="val-video-scale" class="text-emerald-700 font-extrabold">100%</span>
+                  </div>
+                  <input id="rng-video-scale" type="range" min="50" max="220" step="2" value="100" class="jungle-slider" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Posición vertical (Y)</span>
+                    <span id="val-video-posy" class="text-emerald-700 font-extrabold">50%</span>
+                  </div>
+                  <input id="rng-video-posy" type="range" min="0" max="100" step="1" value="50" class="jungle-slider" />
+                </div>
+
+                <div class="flex items-center justify-between gap-2 pt-0.5">
+                  <label for="sel-video-fit" class="text-xs font-bold text-slate-700">Encuadre del video:</label>
+                  <select id="sel-video-fit" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-extrabold text-slate-700">
+                    <option value="cover">Cubrir (cover)</option>
+                    <option value="contain">Contener (contain)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2B. PERSONAJES (personajes.png + sliders) -->
+            <div class="p-3.5 rounded-2xl bg-amber-50/75 border border-amber-200 space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-[#052e19]">🦜 Personajes <code class="text-amber-800 bg-white px-1.5 py-0.5 rounded border border-amber-200">personajes.png</code></div>
+                  <div id="status-chars" class="text-[11px] font-bold text-emerald-700 mt-0.5">Usando guacamayos tropicales SVG integrados</div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <label class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition active:scale-95">
+                    Cargar
+                    <input id="file-chars" type="file" accept="image/png,image/webp,image/jpeg" class="hidden" />
+                  </label>
+                  <button type="button" id="btn-clear-chars" title="Quitar imagen" class="hidden bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-extrabold px-2 py-1.5 rounded-xl">✕</button>
+                </div>
+              </div>
+
+              <div class="bg-white/95 rounded-xl p-3 border border-amber-100 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-extrabold text-slate-600 uppercase">Ajustes de personajes</span>
+                  <button type="button" id="btn-reset-chars" class="text-[11px] font-extrabold text-orange-600 hover:underline">↺ Restablecer</button>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Ancho / Tamaño</span>
+                    <span id="val-chars-size" class="text-orange-600 font-extrabold">92%</span>
+                  </div>
+                  <input id="rng-chars-size" type="range" min="25" max="150" step="1" value="92" class="jungle-slider" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Desplazamiento vertical (Y)</span>
+                    <span id="val-chars-y" class="text-orange-600 font-extrabold">0px</span>
+                  </div>
+                  <input id="rng-chars-y" type="range" min="-100" max="100" step="1" value="0" class="jungle-slider" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Desplazamiento horizontal (X)</span>
+                    <span id="val-chars-x" class="text-orange-600 font-extrabold">0px</span>
+                  </div>
+                  <input id="rng-chars-x" type="range" min="-60" max="60" step="1" value="0" class="jungle-slider" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 2C. FOTO DEL CUMPLEAÑERO (foto.jpg + sliders) -->
+            <div class="p-3.5 rounded-2xl bg-teal-50/75 border border-teal-200 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input id="chk-show-photo" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span class="text-xs sm:text-sm font-extrabold text-[#052e19]">📸 Foto del cumpleañero (<code class="text-teal-800 bg-white px-1 rounded">foto.jpg</code>)</span>
+                </label>
+                <button type="button" id="btn-clear-photo" class="hidden text-xs font-extrabold text-rose-600 hover:underline">Quitar</button>
+              </div>
+
+              <div id="photo-options-box" class="hidden space-y-3">
+                <div class="flex items-center gap-2">
+                  <label class="flex-1 cursor-pointer bg-white hover:bg-teal-50 border-2 border-dashed border-teal-300 rounded-xl px-3 py-2 text-center text-xs font-extrabold text-teal-800 transition">
+                    📤 Subir foto local
+                    <input id="file-kid-photo" type="file" accept="image/*" class="hidden" />
+                  </label>
+                  <select id="sel-photo-frame" class="rounded-xl border border-teal-200 bg-white px-2.5 py-2 text-xs font-extrabold text-slate-700">
+                    <option value="circle">⭕ Circular</option>
+                    <option value="rounded">🟦 Redondeado</option>
+                    <option value="polaroid">📷 Polaroid</option>
+                  </select>
+                </div>
+
+                <div class="bg-white/95 rounded-xl p-3 border border-teal-100 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-extrabold text-slate-600 uppercase">Ajustes de la foto</span>
+                    <button type="button" id="btn-reset-photo" class="text-[11px] font-extrabold text-teal-700 hover:underline">↺ Restablecer</button>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Tamaño del marco</span>
+                      <span id="val-photo-size" class="text-teal-700 font-extrabold">112px</span>
+                    </div>
+                    <input id="rng-photo-size" type="range" min="70" max="220" step="2" value="112" class="jungle-slider" />
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Zoom de la foto</span>
+                      <span id="val-photo-zoom" class="text-teal-700 font-extrabold">100%</span>
+                    </div>
+                    <input id="rng-photo-zoom" type="range" min="100" max="250" step="2" value="100" class="jungle-slider" />
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Posición vertical (Y)</span>
+                      <span id="val-photo-posy" class="text-teal-700 font-extrabold">50%</span>
+                    </div>
+                    <input id="rng-photo-posy" type="range" min="0" max="100" step="1" value="50" class="jungle-slider" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2D. CANCIÓN EXCLUSIVA (musica.mp3) -->
+            <div class="p-3.5 rounded-2xl bg-lime-50/80 border border-lime-200 space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-[#052e19]">🎵 Canción exclusiva <code class="text-emerald-800 bg-white px-1.5 py-0.5 rounded border border-lime-300">musica.mp3</code></div>
+                  <div id="status-music" class="text-[11px] font-bold text-slate-600 mt-0.5 leading-snug">
+                    🔇 Sin MP3 cargado: sube tu canción local o coloca <code class="bg-white px-1 rounded">musica.mp3</code> en tu carpeta
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition active:scale-95">
+                    Cargar MP3
+                    <input id="file-music" type="file" accept="audio/*" class="hidden" />
+                  </label>
+                  <button type="button" id="btn-clear-music" title="Quitar canción" class="hidden bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-extrabold px-2 py-1.5 rounded-xl">✕</button>
+                </div>
+              </div>
+
+              <label id="sample-music-row" class="flex items-center justify-between gap-2 bg-white/90 px-3 py-2 rounded-xl border border-lime-200 cursor-pointer">
+                <span class="text-[11px] font-bold text-slate-600 leading-tight">
+                  Melodía suave sintetizada (solo si NO hay canción MP3 cargada)
+                </span>
+                <input id="chk-sample-music" type="checkbox" class="w-4 h-4 accent-emerald-600 shrink-0 rounded" />
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <!-- SECCIÓN 3: GENERADOR DE INVITACIONES (UNO POR UNO Y POR LOTE) -->
+        <details open class="group bg-white rounded-3xl shadow-md border border-emerald-100 overflow-hidden">
+          <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none bg-gradient-to-r from-teal-50 to-white hover:from-teal-100/60 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-teal-600 text-white font-baloo font-extrabold flex items-center justify-center text-sm shadow-sm">3</span>
+              <div>
+                <h2 class="font-baloo font-extrabold text-base text-[#052e19] leading-tight">💌 Generar Invitaciones</h2>
+                <p class="text-xs text-slate-500 font-semibold">Uno por uno o por lote directo a WhatsApp</p>
+              </div>
+            </div>
+            <span class="text-teal-600 font-bold text-lg group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+
+          <div class="p-4 sm:p-5 space-y-4 border-t border-emerald-100/70">
+            <!-- URL base donde vive el index.html -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+              <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wide mb-1">🌐 URL base de tu página (GitHub Pages)</label>
+              <input id="inp-base-url" type="url" placeholder="https://tu-usuario.github.io/cumple-rio/"
+                class="w-full rounded-xl border border-slate-300 bg-white focus:border-emerald-500 focus:outline-none px-3 py-2 text-xs font-bold text-slate-700" />
+              <p class="text-[11px] text-slate-500 font-semibold mt-1">
+                Todos tus datos y ajustes viajan compactados en el enlace (<code class="bg-white px-1 rounded border">?d=...</code>).
+              </p>
+            </div>
+
+            <!-- Selector de modo: Uno por uno | Por lote -->
+            <div class="grid grid-cols-2 gap-1.5 bg-emerald-100/80 p-1 rounded-2xl">
+              <button type="button" id="gen-tab-single"
+                class="py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-white text-[#052e19] shadow-sm transition">
+                👤 Uno por uno
+              </button>
+              <button type="button" id="gen-tab-batch"
+                class="py-2 rounded-xl text-xs sm:text-sm font-bold text-emerald-800 hover:text-[#052e19] transition">
+                📋 Por lote (Lista)
+              </button>
+            </div>
+
+            <!-- MODO UNO POR UNO -->
+            <div id="gen-panel-single" class="space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Nombre del invitado</label>
+                  <input id="inp-guest-name" type="text" placeholder="Ej. Sofía"
+                    class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Pases (opcional)</label>
+                  <input id="inp-guest-passes" type="text" placeholder="Ej. Válido para 2 personas"
+                    class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-bold text-slate-800" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold text-emerald-800 uppercase tracking-wide mb-1">Nota personal (opcional)</label>
+                <input id="inp-guest-note" type="text" placeholder="Ej. ¡Trae tus mejores pasos de samba!"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none px-3.5 py-2.5 text-sm font-semibold text-slate-700" />
+              </div>
+
+              <button type="button" id="btn-generate-single"
+                class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-700 hover:brightness-110 text-white font-baloo font-extrabold text-base shadow-lg shadow-emerald-600/30 transition active:scale-[0.98]">
+                ✨ Generar Invitación
+              </button>
+
+              <!-- Resultado individual -->
+              <div id="single-result-box" class="hidden p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-200 space-y-2.5">
+                <div class="text-xs font-extrabold text-emerald-900">
+                  🎉 ¡Invitación lista para <span id="single-result-guest-label"></span>!
+                </div>
+                <input id="single-result-url" type="text" readonly
+                  class="w-full rounded-xl border border-emerald-300 bg-white px-3 py-2 text-xs font-mono text-slate-700 select-all" />
+                <div class="grid grid-cols-3 gap-2">
+                  <button type="button" id="btn-single-copy"
+                    class="py-2.5 px-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 font-extrabold text-xs transition active:scale-95">
+                    📋 Copiar
+                  </button>
+                  <button type="button" id="btn-single-preview"
+                    class="py-2.5 px-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-[#052e19] font-extrabold text-xs transition active:scale-95">
+                    ✉️ Probar
+                  </button>
+                  <button type="button" id="btn-single-whatsapp"
+                    class="py-2.5 px-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs transition active:scale-95">
+                    💬 WhatsApp
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODO POR LOTE -->
+            <div id="gen-panel-batch" class="hidden space-y-3">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs font-extrabold text-emerald-800 uppercase tracking-wide">Lista de invitados (uno por línea)</label>
+                  <button type="button" id="btn-batch-example" class="text-[11px] font-extrabold text-emerald-700 hover:underline">
+                    Cargar ejemplo
+                  </button>
+                </div>
+                <textarea id="inp-batch-list" rows="5"
+                  placeholder="Sofía Martínez, 2 personas&#10;Mateo Rojas, 3 personas&#10;Familia Pérez, 4 personas&#10;Valentina"
+                  class="w-full rounded-2xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none p-3 text-xs sm:text-sm font-semibold text-slate-700"></textarea>
+                <p class="text-[11px] text-slate-500 font-semibold mt-1">
+                  Formato: <code class="bg-slate-100 px-1 rounded">Nombre</code> o <code class="bg-slate-100 px-1 rounded">Nombre, Pases</code>
+                </p>
+              </div>
+
+              <button type="button" id="btn-generate-batch"
+                class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-baloo font-extrabold text-base shadow-lg shadow-orange-500/25 transition active:scale-[0.98]">
+                🚀 Generar todas las invitaciones
+              </button>
+
+              <!-- Lista generada -->
+              <div id="batch-results-wrapper" class="hidden space-y-2.5 pt-1">
+                <div class="flex items-center justify-between bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200">
+                  <span class="text-xs font-extrabold text-[#052e19]">Invitaciones generadas</span>
+                  <span id="batch-counter" class="text-xs font-extrabold text-emerald-800 bg-emerald-200/70 px-2.5 py-0.5 rounded-full">
+                    Enviados: 0 de 0
+                  </span>
+                </div>
+                <div id="batch-results-list" class="space-y-2 max-h-80 overflow-y-auto editor-scroll pr-1"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Barra discreta de autoguardado local -->
+        <div class="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/80 border border-emerald-100 text-[11px] text-slate-500 font-bold">
+          <span>💾 Configuración guardada automáticamente en este dispositivo</span>
+          <button type="button" id="btn-reset-all-config" class="text-rose-600 hover:underline font-extrabold shrink-0 ml-2">
+            ↺ Reiniciar datos
+          </button>
+        </div>
+
+        <div class="h-6 lg:hidden"></div>
+      </section>
+
+      <!-- COLUMNA DERECHA: VISTA PREVIA EN VIVO -->
+      <section id="editor-preview-panel" class="hidden lg:flex lg:col-span-7 flex-col items-center p-3 sm:p-4 lg:p-0">
+        <div class="w-full lg:sticky lg:top-[82px] flex flex-col items-center">
+          <!-- Barra de acciones rápidas -->
+          <div class="w-full max-w-[860px] flex flex-wrap items-center justify-between gap-2 mb-3 bg-white/95 backdrop-blur px-3.5 py-2.5 rounded-2xl shadow-sm border border-emerald-100">
+            <span class="text-xs font-extrabold text-[#052e19] flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Vista Previa en Vivo
+            </span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" id="btn-preview-envelope"
+                class="bg-yellow-400 hover:bg-yellow-300 text-[#052e19] text-xs font-extrabold px-3 py-1.5 rounded-xl transition active:scale-95 shadow-sm">
+                ✉️ Probar sobre
+              </button>
+              <button type="button" id="btn-preview-cake"
+                class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl transition active:scale-95 shadow-sm">
+                🎂 Probar pastel
+              </button>
+              <button type="button" id="btn-preview-sound"
+                class="bg-emerald-100 hover:bg-emerald-200 text-[#052e19] text-xs font-extrabold px-2.5 py-1.5 rounded-xl transition active:scale-95">
+                🔇 Audio
+              </button>
+            </div>
+          </div>
+
+          <!-- Escenario de la tarjeta en vivo -->
+          <div id="live-preview-stage" class="w-full flex justify-center items-start py-1 pb-8">
+            <!-- Tarjeta generada por JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- =====================================================================
+       MODO INVITADO (PANTALLA 1: SOBRE 3D -> PANTALLA 2: TARJETA SELVA)
+       ===================================================================== -->
+  <div id="guest-view" class="hidden min-h-screen w-full relative">
+
+    <!-- Volver al editor (visible solo cuando se prueba desde el editor) -->
+    <button type="button" id="btn-back-to-editor"
+      class="hidden fixed top-4 left-4 z-50 bg-white/95 hover:bg-white text-[#052e19] font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-full shadow-lg border-2 border-yellow-400 transition active:scale-95">
+      ← Volver al editor
+    </button>
+
+    <!-- Botón flotante de Mute/Unmute siempre accesible en la invitación -->
+    <button type="button" id="btn-guest-mute" aria-label="Activar o silenciar música"
+      class="hidden fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-[#052e19]/90 hover:bg-[#0b4a2b] text-white text-xl flex items-center justify-center shadow-xl border-2 border-yellow-300 transition active:scale-90">
+      🔊
+    </button>
+
+    <!-- PANTALLA 1: SOBRE 3D CERRADO -->
+    <div id="guest-screen-envelope" class="envelope-stage">
+      <!-- Decoración ambiental selvática -->
+      <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
+        <div class="absolute -top-12 -left-12 w-60 h-60 rounded-full bg-yellow-400 blur-3xl"></div>
+        <div class="absolute bottom-10 -right-12 w-64 h-64 rounded-full bg-emerald-400 blur-3xl"></div>
+        <div class="absolute top-1/4 right-8 text-4xl animate-bounce">🦜</div>
+        <div class="absolute bottom-1/4 left-8 text-3xl animate-pulse">🌴</div>
+        <div class="absolute top-16 left-1/4 text-2xl animate-pulse">🌺</div>
+      </div>
+
+      <div class="relative z-10 flex flex-col items-center text-center max-w-md w-full px-3">
+        <div class="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/25 text-yellow-300 font-extrabold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow">
+          🌴 Invitación Tropical 🦜
+        </div>
+
+        <h2 id="envelope-guest-greeting" class="font-baloo font-extrabold text-2xl sm:text-3xl text-white drop-shadow-md leading-tight mb-2">
+          ¡Sofía, tienes una invitación especial!
+        </h2>
+
+        <div id="envelope-guest-passes" class="hidden inline-flex items-center gap-1.5 bg-yellow-400 text-[#052e19] font-extrabold text-xs sm:text-sm px-3.5 py-1 rounded-full shadow-md mb-5">
+          🎟️ Válido para 2 personas
+        </div>
+
+        <!-- Sobre 3D interactivo -->
+        <div id="interactive-envelope" class="envelope-wrapper my-5" role="button" tabindex="0" aria-label="Abrir invitación">
+          <div class="envelope-body"></div>
+          <div class="envelope-letter">
+            <span class="text-2xl mb-1">🦜🌴🎂</span>
+            <span id="envelope-letter-title" class="font-baloo font-extrabold text-[#052e19] text-base leading-tight">¡Te invito a mi cumple!</span>
+            <span class="text-[11px] font-bold text-emerald-700 mt-0.5">¡Selva, música y alegría!</span>
+          </div>
+          <div class="envelope-front-pocket"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-seal">🦜</div>
+        </div>
+
+        <button type="button" id="btn-open-envelope"
+          class="btn-pulse-rio mt-5 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 text-[#052e19] font-baloo font-extrabold text-lg sm:text-xl px-8 py-3.5 rounded-full shadow-2xl border-2 border-white transition active:scale-95">
+          ✉️ Abrir Invitación
+        </button>
+
+        <p class="text-emerald-200/90 text-xs font-bold mt-3">
+          🔊 Sube el volumen para disfrutar la música
+        </p>
+      </div>
+    </div>
+
+    <!-- PANTALLA 2: TARJETA PRINCIPAL -->
+    <div id="guest-screen-card" class="hidden min-h-screen w-full py-6 px-3 sm:px-6 flex flex-col items-center justify-center bg-gradient-to-b from-[#031a0e] via-[#07331d] to-[#031a0e]">
+      <div id="guest-card-container" class="w-full flex justify-center">
+        <!-- Tarjeta del invitado -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       PANTALLA 3: MODAL DEL PASTEL INTERACTIVO (5 VELITAS CON APAGADO REAL)
+       ===================================================================== -->
+  <div id="cake-modal" class="hidden fixed inset-0 z-[100] bg-[#02170c]/88 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-gradient-to-b from-[#0d5932] via-[#083b21] to-[#042112] border-2 border-yellow-300/75 rounded-[30px] p-5 sm:p-6 text-center text-white shadow-2xl overflow-hidden">
+
+      <button type="button" id="btn-close-cake" aria-label="Cerrar pastel"
+        class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 text-white font-extrabold flex items-center justify-center transition">
+        ✕
+      </button>
+
+      <div class="inline-flex items-center gap-1.5 bg-yellow-400/20 border border-yellow-300/50 text-yellow-300 text-xs font-extrabold px-3.5 py-1 rounded-full mb-2">
+        🎂 Momento del Pastel 🦜
+      </div>
+
+      <h3 class="font-baloo font-extrabold text-2xl text-white leading-tight">
+        ¡Pide un deseo y sopla!
+      </h3>
+
+      <!-- Contador en vivo de velitas restantes -->
+      <p id="cake-counter-text" class="text-yellow-200 text-xs sm:text-sm font-extrabold mt-1.5 mb-3 bg-black/25 inline-block px-4 py-1 rounded-full border border-white/15">
+        Faltan 5 velitas por apagar — ¡Toca cada llama! 👇
+      </p>
+
+      <!-- Escenario del pastel -->
+      <div class="relative flex flex-col items-center justify-end pt-3 pb-2">
+        <!-- Fila de 5 velitas grandes fáciles de tocar -->
+        <div id="cake-candles-row" class="flex items-end justify-center gap-1.5 sm:gap-2.5 relative z-10 -mb-2"></div>
+
+        <!-- Pastel tropical de 2 pisos -->
+        <div class="relative flex flex-col items-center">
+          <div class="relative w-52 h-16 rounded-t-2xl bg-gradient-to-b from-[#ff7a29] to-[#ff4d1a] border-2 border-white/30 shadow-inner overflow-hidden flex items-center justify-center">
+            <div class="absolute top-0 left-0 right-0 h-5 bg-white/95 rounded-t-2xl"
+              style="clip-path: polygon(0 0, 100% 0, 100% 60%, 90% 100%, 80% 55%, 68% 95%, 56% 52%, 44% 100%, 32% 55%, 20% 95%, 10% 55%, 0 85%);"></div>
+            <span class="relative z-10 mt-3 px-3 py-0.5 rounded-full bg-[#06351e] text-yellow-300 font-baloo font-extrabold text-sm shadow">
+              <span id="cake-age-badge">¡Cumple 5 Años!</span>
+            </span>
+          </div>
+          <div class="relative w-64 h-20 rounded-t-xl rounded-b-lg bg-gradient-to-b from-[#10b981] to-[#047857] border-2 border-white/30 shadow-xl overflow-hidden flex items-center justify-center">
+            <div class="absolute top-0 left-0 right-0 h-6 bg-[#ffd426]"
+              style="clip-path: polygon(0 0, 100% 0, 100% 55%, 92% 95%, 82% 50%, 72% 98%, 60% 48%, 50% 95%, 38% 52%, 28% 98%, 16% 50%, 8% 92%, 0 55%);"></div>
+            <div class="relative z-10 mt-4 flex items-center gap-3 text-base">
+              <span>🦜</span><span>🌺</span><span>🌴</span><span>🌺</span><span>🦜</span>
+            </div>
+          </div>
+          <div class="w-72 h-4 rounded-full bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 shadow-lg border border-amber-500/40 -mt-1"></div>
+        </div>
+      </div>
+
+      <!-- Mensaje final SOLO cuando las 5 velitas están apagadas -->
+      <div id="cake-celebration-box" class="hidden mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-yellow-400/25 to-emerald-400/25 border border-yellow-300/75 animate-card-enter">
+        <p class="font-baloo font-extrabold text-lg text-yellow-300 leading-snug">
+          🎉 ¡Deseo pedido! ¡Te esperamos en la fiesta!
+        </p>
+      </div>
+
+      <!-- Botones auxiliares -->
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+        <button type="button" id="btn-blow-all-candles"
+          class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-300 to-emerald-400 hover:brightness-110 text-[#052e19] font-extrabold text-xs sm:text-sm shadow transition active:scale-95">
+          💨 Soplar todas
+        </button>
+        <button type="button" id="btn-relight-candles"
+          class="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-[#052e19] font-extrabold text-xs sm:text-sm shadow transition active:scale-95">
+          🔥 Volver a encender
+        </button>
+        <button type="button" id="btn-cake-done"
+          class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs sm:text-sm border border-white/25 transition active:scale-95">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       SCRIPT PRINCIPAL: ESTADO, AUTOGUARDADO, SELVA VERDE, VIDEO, AUDIO, PASTEL
+       ===================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ===================================================================
+         1. CONFIGURACIÓN POR DEFECTO Y AUTOGUARDADO EN LOCALSTORAGE
+         =================================================================== */
+      const STORAGE_KEY = 'rio_selva_invitaciones_v4';
+
+      const DEFAULT_CONFIG = {
+        subtitle: '¡A volar y bailar en mi cumple!',
+        kidName: 'Gabriel',
+        nameSize: 38,
+        nameNoWrap: false,
+        kidAge: '¡Cumple 5 Años!',
+        date: '2026-12-17',
+        time: '18:00',
+        place: 'En mi casa',
+        mapsUrl: '',
+        whatsapp: '',
+        message: '¡Prepárate para volar entre la selva al ritmo del carnaval! Ven a bailar, reír y celebrar un día inolvidable lleno de color y alegría.',
+        format: '9-16',
+        videoHeight: 220,
+        videoScale: 100,
+        videoPosY: 50,
+        videoFit: 'cover',
+        charsSize: 92,
+        charsOffsetY: 0,
+        charsOffsetX: 0,
+        showPhoto: false,
+        photoFrame: 'circle',
+        photoSize: 112,
+        photoZoom: 100,
+        photoPosY: 50,
+        useSampleMusic: false
+      };
+
+      const MESSAGE_IDEAS = [
+        '¡Prepárate para volar entre la selva al ritmo del carnaval! Ven a bailar, reír y celebrar un día inolvidable lleno de color y alegría.',
+        '¡Abre tus alas y acompáñanos en la selva más divertida! Habrá música, pastel, sorpresas y mucha samba para celebrar.',
+        'La fiesta más alegre de Río está por comenzar y tú eres parte esencial de esta gran bandada. ¡Te esperamos!',
+        '¡Plumas listas y sonrisas arriba! Ven a festejar este cumpleaños lleno de magia tropical, juegos y momentos inolvidables.',
+        '¡Suenan los tambores del carnaval en la selva! Te invitamos a compartir risas, dulces y mucha diversión en nuestro gran día.',
+        'Porque celebrar contigo hace que la selva brille más bonito, ¡ven a festejar esta nueva vuelta al sol al estilo Río!',
+        '¡Atención bandada! Despegamos rumbo a una tarde llena de música, confeti y pastel. ¡No puedes faltar!',
+        'Entre palmeras, guacamayos y ritmo tropical, celebramos un año más de vida. ¡Ven a compartir esta alegría!',
+        '¡Samba, selva, pastel y mucha emoción! Prepara tu mejor sonrisa porque te esperamos para festejar a lo grande.',
+        '¡La selva verde está de fiesta! Acompáñanos a soplar las velitas y pedir un deseo gigante en este cumpleaños tan especial.'
+      ];
+      let messageIdeaIdx = 0;
+
+      const SPANISH_MONTHS = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+
+      /* ===================================================================
+         2. ESTADO GLOBAL
+         =================================================================== */
+      const state = {
+        mode: 'editor',
+        testingFromEditor: false,
+        baseUrl: '',
+        config: Object.assign({}, DEFAULT_CONFIG),
+        guest: {
+          name: 'Sofía',
+          passes: 'Válido para 2 personas',
+          note: ''
+        },
+        media: {
+          videoUrl: null,
+          charsUrl: null,
+          photoUrl: null,
+          musicUrl: null,
+          musicName: ''
+        },
+        batchItems: [],
+        countdownTimer: null
+      };
+
+      function saveToLocalStorage() {
+        if (state.mode !== 'editor') return;
+        try {
+          const payload = {
+            config: state.config,
+            guest: state.guest,
+            baseUrl: state.baseUrl
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (e) {
+          // Ignorar errores en navegadores con modo privado estricto
+        }
+      }
+
+      function loadFromLocalStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.config) {
+            state.config = Object.assign({}, DEFAULT_CONFIG, parsed.config);
+          }
+          if (parsed && parsed.guest) {
+            state.guest = Object.assign({}, state.guest, parsed.guest);
+          }
+          if (parsed && parsed.baseUrl) {
+            state.baseUrl = parsed.baseUrl;
+          }
+        } catch (e) {
+          // Mantener valores por defecto si localStorage falla
+        }
+      }
+
+      /* ===================================================================
+         3. UTILIDADES (BASE64 URL-SAFE, ESCAPE HTML, CLIPBOARD, TOAST)
+         =================================================================== */
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function clampNumber(val, min, max, fallback) {
+        const num = Number(val);
+        if (isNaN(num)) return fallback;
+        return Math.min(max, Math.max(min, num));
+      }
+
+      function toBase64Url(str) {
+        try {
+          const bytes = new TextEncoder().encode(str);
+          let binary = '';
+          for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+          return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (e) {
+          return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+      }
+
+      function fromBase64Url(b64) {
+        let norm = String(b64 || '').replace(/-/g, '+').replace(/_/g, '/');
+        while (norm.length % 4) norm += '=';
+        const binary = atob(norm);
+        try {
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          return new TextDecoder().decode(bytes);
+        } catch (e) {
+          return decodeURIComponent(escape(binary));
+        }
+      }
+
+      function showToast(msg, icon) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'rio-toast';
+        toast.innerHTML = '<span>' + (icon || '🦜') + '</span><span>' + escapeHtml(msg) + '</span>';
+        container.appendChild(toast);
+        setTimeout(function () {
+          toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          setTimeout(function () { toast.remove(); }, 320);
+        }, 2400);
+      }
+
+      function copyTextToClipboard(text) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) return true;
+        } catch (e) {}
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (e) {}
+        return false;
+      }
+
+      function formatDateParts(dateStr) {
+        if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+          return { day: '17', month: 'Diciembre', year: 2026 };
+        }
+        const parts = dateStr.split('-');
+        const year = parseInt(parts[0], 10);
+        const monthIdx = Math.max(0, Math.min(11, parseInt(parts[1], 10) - 1));
+        const day = String(parseInt(parts[2], 10));
+        return { day: day, month: SPANISH_MONTHS[monthIdx], year: year };
+      }
+
+      function cleanPhoneDigits(raw) {
+        return String(raw || '').replace(/[^\d]/g, '');
+      }
+
+      /* ===================================================================
+         4. MOTOR DE AUDIO EXCLUSIVO
+         - Si hay MP3 cargado o musica.mp3 detectado: suena ÚNICAMENTE ese
+           archivo en bucle; cero sonidos sintéticos Web Audio.
+         - Sin MP3: opcionalmente suena una melodía suave sintetizada si el
+           interruptor del editor está activado.
+         =================================================================== */
+      const AudioEngine = {
+        ctx: null,
+        isPlaying: false,
+        isMuted: false,
+        loopTimer: null,
+        noteIdx: 0,
+        audioEl: null,
+
+        init: function () {
+          this.audioEl = document.getElementById('bg-music-audio');
+          if (this.audioEl) {
+            this.audioEl.loop = true;
+            this.audioEl.addEventListener('ended', function () {
+              if (AudioEngine.isPlaying && !AudioEngine.isMuted) {
+                this.currentTime = 0;
+                this.play().catch(function () {});
+              }
+            });
+          }
+        },
+
+        hasCustomSong: function () {
+          return !!state.media.musicUrl;
+        },
+
+        ensureContext: function () {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(function () {});
+          }
+          return this.ctx;
+        },
+
+        melody: [
+          { f: 392.00, d: 0.30 }, { f: 392.00, d: 0.18 }, { f: 440.00, d: 0.45 },
+          { f: 392.00, d: 0.45 }, { f: 523.25, d: 0.45 }, { f: 493.88, d: 0.85 },
+          { f: 392.00, d: 0.30 }, { f: 392.00, d: 0.18 }, { f: 440.00, d: 0.45 },
+          { f: 392.00, d: 0.45 }, { f: 587.33, d: 0.45 }, { f: 523.25, d: 0.85 },
+          { f: 392.00, d: 0.30 }, { f: 392.00, d: 0.18 }, { f: 783.99, d: 0.45 },
+          { f: 659.25, d: 0.45 }, { f: 523.25, d: 0.45 }, { f: 493.88, d: 0.45 }, { f: 440.00, d: 0.72 },
+          { f: 698.46, d: 0.30 }, { f: 698.46, d: 0.18 }, { f: 659.25, d: 0.45 },
+          { f: 523.25, d: 0.45 }, { f: 587.33, d: 0.45 }, { f: 523.25, d: 1.05 }
+        ],
+
+        playSampleNote: function (freq, duration) {
+          if (this.hasCustomSong() || !state.config.useSampleMusic || this.isMuted) return;
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.11, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + Math.max(0.18, duration * 0.92));
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + duration + 0.04);
+        },
+
+        startMusic: function () {
+          this.stopMusic();
+
+          if (this.hasCustomSong() && this.audioEl) {
+            this.isPlaying = true;
+            this.isMuted = false;
+            if (this.audioEl.src !== state.media.musicUrl) {
+              this.audioEl.src = state.media.musicUrl;
+            }
+            this.audioEl.loop = true;
+            this.audioEl.muted = false;
+            this.audioEl.volume = 0.85;
+            this.audioEl.play().catch(function () {});
+            this.updateButtons();
+            return;
+          }
+
+          if (state.config.useSampleMusic) {
+            this.isPlaying = true;
+            this.isMuted = false;
+            this.startSynthLoop();
+            this.updateButtons();
+            return;
+          }
+
+          this.isPlaying = false;
+          this.isMuted = true;
+          this.updateButtons();
+        },
+
+        startSynthLoop: function () {
+          if (this.hasCustomSong()) return;
+          this.ensureContext();
+          this.noteIdx = 0;
+          const self = this;
+          function tickNote() {
+            if (!self.isPlaying || self.hasCustomSong() || !state.config.useSampleMusic) return;
+            const note = self.melody[self.noteIdx % self.melody.length];
+            if (!self.isMuted) self.playSampleNote(note.f, note.d);
+            self.noteIdx++;
+            self.loopTimer = setTimeout(tickNote, note.d * 1000);
+          }
+          tickNote();
+        },
+
+        stopMusic: function () {
+          this.isPlaying = false;
+          if (this.loopTimer) {
+            clearTimeout(this.loopTimer);
+            this.loopTimer = null;
+          }
+          if (this.audioEl) {
+            try { this.audioEl.pause(); } catch (e) {}
+          }
+          this.updateButtons();
+        },
+
+        toggleMute: function () {
+          if (!this.hasCustomSong() && !state.config.useSampleMusic) {
+            showToast('Carga un MP3 o activa la melodía sintetizada en el editor', '🔇');
+            return;
+          }
+
+          if (!this.isPlaying) {
+            this.startMusic();
+            return;
+          }
+
+          this.isMuted = !this.isMuted;
+          if (this.audioEl && this.hasCustomSong()) {
+            this.audioEl.muted = this.isMuted;
+            if (!this.isMuted && this.audioEl.paused) {
+              this.audioEl.play().catch(function () {});
+            }
+          }
+          this.updateButtons();
+        },
+
+        updateButtons: function () {
+          const active = this.isPlaying && !this.isMuted;
+          const guestBtn = document.getElementById('btn-guest-mute');
+          if (guestBtn) guestBtn.textContent = active ? '🔊' : '🔇';
+          const prevBtn = document.getElementById('btn-preview-sound');
+          if (prevBtn) prevBtn.textContent = active ? '🔊 Audio' : '🔇 Audio';
+        }
+      };
+
+      /* ===================================================================
+         5. MOTOR DE CONFETI Y FUEGOS ARTIFICIALES EN CANVAS PROPIO
+         =================================================================== */
+      const FXCanvas = {
+        canvas: null,
+        ctx: null,
+        particles: [],
+        rafId: null,
+        colors: ['#ffd426', '#10b981', '#00d4c8', '#ff622e', '#a3e635', '#ff3d8b', '#ffffff'],
+
+        init: function () {
+          this.canvas = document.getElementById('fx-canvas');
+          if (!this.canvas) return;
+          this.ctx = this.canvas.getContext('2d');
+          this.resize();
+          const self = this;
+          window.addEventListener('resize', function () { self.resize(); });
+        },
+
+        resize: function () {
+          if (!this.canvas) return;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          this.canvas.width = window.innerWidth * dpr;
+          this.canvas.height = window.innerHeight * dpr;
+          this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        },
+
+        burstConfetti: function (count, originX, originY) {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const ox = typeof originX === 'number' ? originX : w / 2;
+          const oy = typeof originY === 'number' ? originY : h * 0.42;
+          const total = count || 120;
+
+          for (let i = 0; i < total; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 3 + Math.random() * 10.5;
+            this.particles.push({
+              kind: 'confetti',
+              x: ox + (Math.random() - 0.5) * 45,
+              y: oy + (Math.random() - 0.5) * 20,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 4.8,
+              size: 5 + Math.random() * 7,
+              color: this.colors[Math.floor(Math.random() * this.colors.length)],
+              rot: Math.random() * 360,
+              vrot: (Math.random() - 0.5) * 14,
+              gravity: 0.16 + Math.random() * 0.08,
+              alpha: 1,
+              decay: 0.0055 + Math.random() * 0.005,
+              shape: Math.random() > 0.35 ? 'rect' : 'circle'
+            });
+          }
+          this.startLoop();
+        },
+
+        launchFireworks: function () {
+          const self = this;
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const bursts = [
+            { x: w * 0.24, y: h * 0.25, delay: 0 },
+            { x: w * 0.76, y: h * 0.23, delay: 220 },
+            { x: w * 0.50, y: h * 0.19, delay: 460 },
+            { x: w * 0.28, y: h * 0.36, delay: 720 },
+            { x: w * 0.72, y: h * 0.34, delay: 980 },
+            { x: w * 0.50, y: h * 0.28, delay: 1240 }
+          ];
+          bursts.forEach(function (b) {
+            setTimeout(function () {
+              self.spawnFireworkExplosion(b.x, b.y);
+            }, b.delay);
+          });
+          this.burstConfetti(140, w / 2, h * 0.45);
+        },
+
+        spawnFireworkExplosion: function (cx, cy) {
+          const baseColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+          const count = 52;
+          for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.14;
+            const speed = 2.6 + Math.random() * 7;
+            this.particles.push({
+              kind: 'spark',
+              x: cx,
+              y: cy,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              size: 2.8 + Math.random() * 2.5,
+              color: Math.random() > 0.28 ? baseColor : '#ffffff',
+              gravity: 0.085,
+              alpha: 1,
+              decay: 0.014 + Math.random() * 0.01
+            });
+          }
+          this.startLoop();
+        },
+
+        startLoop: function () {
+          if (this.rafId) return;
+          const self = this;
+          function tick() {
+            const ctx = self.ctx;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            ctx.clearRect(0, 0, w, h);
+
+            for (let i = self.particles.length - 1; i >= 0; i--) {
+              const p = self.particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += p.gravity;
+              p.vx *= 0.985;
+              p.alpha -= p.decay;
+
+              if (p.alpha <= 0 || p.y > h + 40) {
+                self.particles.splice(i, 1);
+                continue;
+              }
+
+              ctx.save();
+              ctx.globalAlpha = Math.max(0, p.alpha);
+              ctx.fillStyle = p.color;
+
+              if (p.kind === 'spark') {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+              } else {
+                ctx.translate(p.x, p.y);
+                p.rot += p.vrot;
+                ctx.rotate((p.rot * Math.PI) / 180);
+                if (p.shape === 'circle') {
+                  ctx.beginPath();
+                  ctx.arc(0, 0, p.size * 0.55, 0, Math.PI * 2);
+                  ctx.fill();
+                } else {
+                  ctx.fillRect(-p.size / 2, -p.size * 0.35, p.size, p.size * 0.7);
+                }
+              }
+              ctx.restore();
+            }
+
+            if (self.particles.length > 0) {
+              self.rafId = requestAnimationFrame(tick);
+            } else {
+              self.rafId = null;
+            }
+          }
+          this.rafId = requestAnimationFrame(tick);
+        }
+      };
+
+      /* ===================================================================
+         6. ILUSTRACIONES SVG: CIELO TROPICAL, SELVA VERDE Y GUACAMAYOS RÍO
+         =================================================================== */
+      function getTropicalSkyHeaderSVG() {
+        return `
+          <svg viewBox="0 0 420 220" preserveAspectRatio="xMidYMid slice" class="w-full h-full block">
+            <defs>
+              <linearGradient id="skyJungleTop" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0d8aa8"/>
+                <stop offset="48%" stop-color="#35c49f"/>
+                <stop offset="85%" stop-color="#229b62"/>
+                <stop offset="100%" stop-color="#094024"/>
+              </linearGradient>
+              <radialGradient id="canopySun" cx="50%" cy="55%" r="48%">
+                <stop offset="0%" stop-color="#fef9c3" stop-opacity="0.92"/>
+                <stop offset="50%" stop-color="#86efac" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#0d8aa8" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <rect width="420" height="220" fill="url(#skyJungleTop)"/>
+            <ellipse cx="210" cy="115" rx="185" ry="95" fill="url(#canopySun)"/>
+
+            <!-- Nubes suaves -->
+            <g fill="#ffffff" opacity="0.34">
+              <ellipse cx="88" cy="44" rx="34" ry="12"/>
+              <ellipse cx="110" cy="40" rx="22" ry="9"/>
+              <ellipse cx="330" cy="36" rx="38" ry="12"/>
+              <ellipse cx="352" cy="33" rx="22" ry="9"/>
+            </g>
+
+            <!-- Colinas selváticas al fondo -->
+            <path d="M0 164 Q85 102 175 140 T335 118 Q385 102 420 142 L420 220 L0 220 Z" fill="#147a47" opacity="0.72"/>
+            <path d="M0 182 Q100 132 200 165 T420 148 L420 220 L0 220 Z" fill="#0c542f" opacity="0.9"/>
+
+            <!-- Bandada de guacamayos volando -->
+            <g class="bird-flight-1" transform="translate(0, 48)">
+              <g class="bird-wings">
+                <path d="M0 0 Q14 -16 30 -4 Q18 2 10 4 Z" fill="#00b4ff"/>
+                <path d="M0 0 Q-14 -14 -26 -2 Q-14 4 -6 5 Z" fill="#0077e6"/>
+                <circle cx="4" cy="2" r="5" fill="#009cff"/>
+                <path d="M8 1 L14 3 L8 5 Z" fill="#ffd426"/>
+                <path d="M-4 4 L-22 14 L-12 6 Z" fill="#22e3d5"/>
+              </g>
+            </g>
+            <g class="bird-flight-2" transform="translate(0, 86)">
+              <g class="bird-wings">
+                <path d="M0 0 Q13 -15 28 -3 Q15 2 8 4 Z" fill="#ffd426"/>
+                <path d="M0 0 Q-12 -13 -24 -1 Q-12 4 -5 5 Z" fill="#ff622e"/>
+                <circle cx="4" cy="2" r="4.5" fill="#ff8426"/>
+                <path d="M8 1 L13 3 L8 5 Z" fill="#06351e"/>
+                <path d="M-4 4 L-20 12 L-10 5 Z" fill="#fef08a"/>
+              </g>
+            </g>
+            <g class="bird-flight-3" transform="translate(0, 30)">
+              <g class="bird-wings">
+                <path d="M0 0 Q10 -12 22 -2 Q12 2 6 3 Z" fill="#00d4c8"/>
+                <path d="M0 0 Q-10 -11 -20 -1 Q-10 3 -4 4 Z" fill="#0088f5"/>
+                <circle cx="3" cy="2" r="4" fill="#00a8ff"/>
+              </g>
+            </g>
+            <g class="bird-flight-4" transform="translate(0, 110)">
+              <g class="bird-wings">
+                <path d="M0 0 Q11 -12 24 -2 Q12 3 7 4 Z" fill="#a3e635"/>
+                <path d="M0 0 Q-11 -11 -21 -1 Q-11 3 -5 4 Z" fill="#16a34a"/>
+                <circle cx="4" cy="2" r="4" fill="#4ade80"/>
+              </g>
+            </g>
+
+            <!-- Copas de palmeras en las esquinas -->
+            <g class="jungle-leaf-left">
+              <path d="M-12 18 Q44 10 78 48 Q38 56 -12 40 Z" fill="#15803d"/>
+              <path d="M-14 64 Q56 44 92 88 Q48 98 -14 86 Z" fill="#16a34a"/>
+            </g>
+            <g class="jungle-leaf-right">
+              <path d="M432 16 Q376 10 342 48 Q382 56 432 40 Z" fill="#15803d"/>
+              <path d="M434 62 Q364 44 330 88 Q374 98 434 86 Z" fill="#16a34a"/>
+            </g>
+          </svg>
+        `;
+      }
+
+      function getJungleBackdropSVG() {
+        return `
+          <div class="jungle-backdrop-layer" aria-hidden="true">
+            <div class="jungle-sunbeam"></div>
+            <svg viewBox="0 0 420 760" preserveAspectRatio="xMidYMin slice" class="w-full h-full block opacity-95">
+              <defs>
+                <linearGradient id="leafDark" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#15803d"/>
+                  <stop offset="100%" stop-color="#052e16"/>
+                </linearGradient>
+                <linearGradient id="leafBright" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#34d399"/>
+                  <stop offset="100%" stop-color="#0f6b3a"/>
+                </linearGradient>
+                <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#062918"/>
+                  <stop offset="50%" stop-color="#0d4227"/>
+                  <stop offset="100%" stop-color="#041d10"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Troncos y siluetas de árboles selváticos laterales -->
+              <path d="M-10 40 Q22 240 8 490 L-10 760 Z" fill="url(#trunkGrad)" opacity="0.65"/>
+              <path d="M430 30 Q395 250 412 510 L430 760 Z" fill="url(#trunkGrad)" opacity="0.65"/>
+
+              <!-- Siluetas suaves de palmeras tropicales en el fondo -->
+              <g fill="#0c522d" opacity="0.55">
+                <path d="M35 280 Q82 220 148 242 Q96 254 55 294 Z"/>
+                <path d="M35 280 Q95 262 152 298 Q98 292 48 298 Z"/>
+                <path d="M385 265 Q332 206 266 232 Q318 246 365 282 Z"/>
+                <path d="M385 265 Q325 250 268 288 Q322 280 374 285 Z"/>
+                <path d="M22 520 Q92 470 156 502 Q96 510 38 542 Z"/>
+                <path d="M398 530 Q330 480 264 514 Q324 522 382 552 Z"/>
+              </g>
+
+              <!-- Lianas colgantes -->
+              <g class="jungle-vine" stroke="#15803d" stroke-width="3" fill="none" opacity="0.72">
+                <path d="M44 0 Q56 70 36 142 Q26 190 42 238"/>
+                <path d="M376 0 Q360 76 382 150 Q392 198 372 246"/>
+              </g>
+              <g fill="#22c55e" opacity="0.7">
+                <ellipse cx="47" cy="58" rx="9" ry="4.5" transform="rotate(24 47 58)"/>
+                <ellipse cx="36" cy="112" rx="10" ry="5" transform="rotate(-22 36 112)"/>
+                <ellipse cx="371" cy="64" rx="9" ry="4.5" transform="rotate(-26 371 64)"/>
+                <ellipse cx="383" cy="122" rx="10" ry="5" transform="rotate(22 383 122)"/>
+              </g>
+
+              <!-- Grandes hojas de monstera y helechos en las esquinas -->
+              <g class="jungle-leaf-left">
+                <path d="M-18 32 Q42 18 82 68 Q40 86 -18 68 Z" fill="url(#leafBright)" opacity="0.82"/>
+                <path d="M-16 98 Q56 82 96 138 Q48 164 -16 148 Z" fill="url(#leafDark)" opacity="0.88"/>
+                <path d="M-20 340 Q48 316 86 368 Q38 394 -20 380 Z" fill="url(#leafDark)" opacity="0.72"/>
+                <path d="M-18 635 Q68 605 112 668 Q56 710 -18 696 Z" fill="url(#leafBright)" opacity="0.45"/>
+              </g>
+              <g class="jungle-leaf-right">
+                <path d="M438 28 Q378 16 338 66 Q380 84 438 64 Z" fill="url(#leafBright)" opacity="0.82"/>
+                <path d="M436 96 Q364 80 324 136 Q372 162 436 144 Z" fill="url(#leafDark)" opacity="0.88"/>
+                <path d="M440 344 Q372 320 334 372 Q382 398 440 382 Z" fill="url(#leafDark)" opacity="0.72"/>
+                <path d="M438 638 Q352 608 308 672 Q364 714 438 700 Z" fill="url(#leafBright)" opacity="0.45"/>
+              </g>
+
+              <!-- Siluetas estilizadas de aves tropicales -->
+              <g fill="#34d399" opacity="0.32">
+                <path d="M88 150 Q104 132 122 145 Q108 150 96 156 Q80 144 68 148 Q78 155 88 156 Z"/>
+                <path d="M326 164 Q342 146 358 158 Q344 164 334 170 Q318 158 304 162 Q314 169 326 170 Z"/>
+                <path d="M22 446 C36 434 52 444 48 462 C44 476 26 492 14 510 C20 490 16 474 20 462 Z"/>
+                <path d="M44 446 Q62 448 58 456 Q48 456 44 452 Z" fill="#ffd426" opacity="0.55"/>
+                <path d="M398 456 C384 444 368 454 372 472 C376 486 394 502 406 520 C400 500 404 484 400 472 Z"/>
+                <path d="M376 456 Q358 458 362 466 Q372 466 376 462 Z" fill="#ff7a33" opacity="0.55"/>
+              </g>
+
+              <!-- Flores tropicales -->
+              <g transform="translate(34, 152)" opacity="0.85">
+                <circle cx="0" cy="-7" r="6.5" fill="#ff477e"/>
+                <circle cx="7" cy="0" r="6.5" fill="#ff477e"/>
+                <circle cx="0" cy="7" r="6.5" fill="#ff477e"/>
+                <circle cx="-7" cy="0" r="6.5" fill="#ff477e"/>
+                <circle cx="0" cy="0" r="4" fill="#ffd426"/>
+              </g>
+              <g transform="translate(386, 156)" opacity="0.85">
+                <circle cx="0" cy="-6.5" r="6" fill="#ff7a29"/>
+                <circle cx="6.5" cy="0" r="6" fill="#ff7a29"/>
+                <circle cx="0" cy="6.5" r="6" fill="#ff7a29"/>
+                <circle cx="-6.5" cy="0" r="6" fill="#ff7a29"/>
+                <circle cx="0" cy="0" r="3.8" fill="#fef08a"/>
+              </g>
+              <g transform="translate(32, 668)" opacity="0.65">
+                <circle cx="0" cy="-6" r="5.5" fill="#ffd426"/>
+                <circle cx="6" cy="0" r="5.5" fill="#ffd426"/>
+                <circle cx="0" cy="6" r="5.5" fill="#ffd426"/>
+                <circle cx="-6" cy="0" r="5.5" fill="#ffd426"/>
+                <circle cx="0" cy="0" r="3.5" fill="#ff5e1a"/>
+              </g>
+              <g transform="translate(388, 672)" opacity="0.65">
+                <circle cx="0" cy="-6" r="5.5" fill="#ff477e"/>
+                <circle cx="6" cy="0" r="5.5" fill="#ff477e"/>
+                <circle cx="0" cy="6" r="5.5" fill="#ff477e"/>
+                <circle cx="-6" cy="0" r="5.5" fill="#ff477e"/>
+                <circle cx="0" cy="0" r="3.5" fill="#fef08a"/>
+              </g>
+
+              <!-- Luciérnagas / destellos cálidos -->
+              <circle cx="96" cy="96" r="3" fill="#fef08a" class="firefly-dot"/>
+              <circle cx="328" cy="110" r="2.6" fill="#a7f3d0" class="firefly-dot" style="animation-delay:0.8s"/>
+              <circle cx="72" cy="312" r="2.8" fill="#fef08a" class="firefly-dot" style="animation-delay:1.5s"/>
+              <circle cx="352" cy="336" r="3.2" fill="#86efac" class="firefly-dot" style="animation-delay:2.1s"/>
+              <circle cx="114" cy="542" r="2.4" fill="#fef08a" class="firefly-dot" style="animation-delay:1.1s"/>
+              <circle cx="312" cy="588" r="2.8" fill="#fde047" class="firefly-dot" style="animation-delay:0.4s"/>
+            </svg>
+          </div>
+        `;
+      }
+
+      function getHeroMacawsSVG() {
+        return `
+          <svg viewBox="0 0 380 215" class="w-full h-auto block">
+            <defs>
+              <linearGradient id="macawBlueMain" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c5ff"/>
+                <stop offset="60%" stop-color="#0077e6"/>
+                <stop offset="100%" stop-color="#05419e"/>
+              </linearGradient>
+              <linearGradient id="macawBlueLight" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5ce1ff"/>
+                <stop offset="100%" stop-color="#0b67d1"/>
+              </linearGradient>
+              <linearGradient id="leafNest" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#14532d"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Base de ramas y hojas frondosas -->
+            <ellipse cx="190" cy="196" rx="176" ry="22" fill="#06351e" opacity="0.72"/>
+            <ellipse cx="86" cy="190" rx="58" ry="16" fill="url(#leafNest)"/>
+            <ellipse cx="294" cy="190" rx="60" ry="17" fill="url(#leafNest)"/>
+            <ellipse cx="190" cy="194" rx="88" ry="19" fill="#16a34a"/>
+
+            <!-- Flores tropicales -->
+            <g transform="translate(46, 176)">
+              <circle cx="0" cy="-7" r="7" fill="#ff477e"/>
+              <circle cx="7" cy="0" r="7" fill="#ff477e"/>
+              <circle cx="0" cy="7" r="7" fill="#ff477e"/>
+              <circle cx="-7" cy="0" r="7" fill="#ff477e"/>
+              <circle cx="0" cy="0" r="4.5" fill="#ffd426"/>
+            </g>
+            <g transform="translate(332, 174)">
+              <circle cx="0" cy="-6" r="6" fill="#ff8c1a"/>
+              <circle cx="6" cy="0" r="6" fill="#ff8c1a"/>
+              <circle cx="0" cy="6" r="6" fill="#ff8c1a"/>
+              <circle cx="-6" cy="0" r="6" fill="#ff8c1a"/>
+              <circle cx="0" cy="0" r="4" fill="#fff275"/>
+            </g>
+
+            <!-- Guacamayo izquierdo -->
+            <g transform="translate(76, 86)">
+              <ellipse cx="12" cy="64" rx="28" ry="44" fill="url(#macawBlueLight)"/>
+              <ellipse cx="14" cy="70" rx="18" ry="30" fill="#5eead4" opacity="0.55"/>
+              <path d="M-12 52 Q-42 18 -34 -2 Q-12 10 -4 40 Z" fill="#0088f5" stroke="#06398f" stroke-width="2"/>
+              <circle cx="14" cy="22" r="24" fill="url(#macawBlueLight)"/>
+              <path d="M6 0 Q12 -16 20 -2 Q25 -14 28 2 Z" fill="#00b4ff"/>
+              <ellipse cx="6" cy="19" rx="6.5" ry="8" fill="#ffffff"/>
+              <ellipse cx="21" cy="19" rx="6.5" ry="8" fill="#ffffff"/>
+              <circle cx="8" cy="20" r="3.6" fill="#0a1f44"/>
+              <circle cx="20" cy="20" r="3.6" fill="#0a1f44"/>
+              <circle cx="9" cy="18.5" r="1.4" fill="#ffffff"/>
+              <circle cx="21" cy="18.5" r="1.4" fill="#ffffff"/>
+              <path d="M8 28 Q16 22 25 28 Q16 40 8 28 Z" fill="#2c3345"/>
+              <path d="M11 30 Q16 36 22 30 Z" fill="#ff5e78"/>
+            </g>
+
+            <!-- Guacamayo derecho -->
+            <g transform="translate(274, 92)">
+              <ellipse cx="12" cy="58" rx="26" ry="42" fill="url(#macawBlueLight)"/>
+              <ellipse cx="10" cy="64" rx="17" ry="28" fill="#5ce1ff" opacity="0.6"/>
+              <path d="M36 46 Q62 16 54 -2 Q34 10 28 38 Z" fill="#0088f5" stroke="#06398f" stroke-width="2"/>
+              <circle cx="10" cy="20" r="22" fill="url(#macawBlueLight)"/>
+              <path d="M2 -1 Q8 -15 16 -2 Q22 -12 24 2 Z" fill="#00b4ff"/>
+              <ellipse cx="3" cy="18" rx="6" ry="7.5" fill="#ffffff"/>
+              <ellipse cx="17" cy="18" rx="6" ry="7.5" fill="#ffffff"/>
+              <circle cx="4" cy="19" r="3.4" fill="#0a1f44"/>
+              <circle cx="16" cy="19" r="3.4" fill="#0a1f44"/>
+              <circle cx="5" cy="17.5" r="1.3" fill="#ffffff"/>
+              <circle cx="17" cy="17.5" r="1.3" fill="#ffffff"/>
+              <path d="M3 26 Q10 21 19 26 Q10 37 3 26 Z" fill="#2c3345"/>
+              <path d="M6 28 Q10 33 16 28 Z" fill="#ff5e78"/>
+            </g>
+
+            <!-- Guacamayo protagonista central -->
+            <g transform="translate(190, 44)">
+              <path d="M-24 62 Q-86 30 -78 88 Q-52 112 -20 96 Z" fill="#0073e6" stroke="#053082" stroke-width="2.5"/>
+              <path d="M-28 66 Q-72 48 -66 84 Q-45 96 -22 86 Z" fill="#22c5ff"/>
+              <path d="M24 62 Q88 22 82 84 Q56 108 20 96 Z" fill="#0073e6" stroke="#053082" stroke-width="2.5"/>
+              <path d="M28 66 Q72 42 68 80 Q46 94 22 86 Z" fill="#22c5ff"/>
+              <ellipse cx="0" cy="88" rx="44" ry="58" fill="url(#macawBlueMain)"/>
+              <ellipse cx="0" cy="96" rx="29" ry="42" fill="#38bdf8" opacity="0.55"/>
+              <circle cx="0" cy="34" r="33" fill="url(#macawBlueMain)"/>
+              <path d="M-14 6 Q-6 -20 4 -4 Q12 -22 18 -2 Q26 -14 24 10 Z" fill="#14b8ff"/>
+              <ellipse cx="-12" cy="36" rx="12" ry="13" fill="#e6f7ff"/>
+              <ellipse cx="12" cy="36" rx="12" ry="13" fill="#e6f7ff"/>
+              <ellipse cx="-11" cy="33" rx="8.5" ry="10.5" fill="#ffffff"/>
+              <ellipse cx="11" cy="33" rx="8.5" ry="10.5" fill="#ffffff"/>
+              <circle cx="-9" cy="34" r="4.8" fill="#071a42"/>
+              <circle cx="9" cy="34" r="4.8" fill="#071a42"/>
+              <circle cx="-7.5" cy="32" r="2" fill="#ffffff"/>
+              <circle cx="10.5" cy="32" r="2" fill="#ffffff"/>
+              <path d="M-12 45 Q0 35 12 45 Q6 62 0 64 Q-6 62 -12 45 Z" fill="#232a3b"/>
+              <path d="M-6 49 Q0 57 6 49 Z" fill="#ff5c7a"/>
+              <path d="M-18 142 L-24 150 M-18 142 L-18 152 M-18 142 L-12 150" stroke="#ffd426" stroke-width="4" stroke-linecap="round"/>
+              <path d="M18 142 L12 150 M18 142 L18 152 M18 142 L24 150" stroke="#ffd426" stroke-width="4" stroke-linecap="round"/>
+            </g>
+
+            <!-- Hojas de primer plano -->
+            <path d="M0 175 Q32 145 64 182 Q28 202 0 198 Z" fill="#15803d"/>
+            <path d="M380 175 Q348 145 316 182 Q352 202 380 198 Z" fill="#15803d"/>
+          </svg>
+        `;
+      }
+
+      /* ===================================================================
+         7. BLINDAJE DEL VIDEO: SIEMPRE EN BUCLE Y SIEMPRE SIN AUDIO
+         =================================================================== */
+      function enforceMutedLoopVideo(videoEl) {
+        if (!videoEl) return;
+        function lockSilentLoop() {
+          try {
+            videoEl.muted = true;
+            videoEl.defaultMuted = true;
+            videoEl.volume = 0;
+            videoEl.loop = true;
+          } catch (e) {}
+        }
+        lockSilentLoop();
+
+        videoEl.addEventListener('loadedmetadata', function () {
+          lockSilentLoop();
+          videoEl.play().catch(function () {});
+        });
+        videoEl.addEventListener('play', lockSilentLoop);
+        videoEl.addEventListener('volumechange', function () {
+          if (!videoEl.muted || videoEl.volume !== 0) lockSilentLoop();
+        });
+        videoEl.addEventListener('ended', function () {
+          lockSilentLoop();
+          videoEl.currentTime = 0;
+          videoEl.play().catch(function () {});
+        });
+
+        videoEl.play().catch(function () {});
+      }
+
+      /* ===================================================================
+         8. RENDERIZADO DE LA TARJETA + ACTUALIZACIÓN SUAVE SIN PARPADEO
+         =================================================================== */
+      function build3DKidNameHTML(nameText) {
+        const clean = (nameText || 'Gabriel').trim();
+        let html = '';
+        for (let i = 0; i < clean.length; i++) {
+          const ch = clean[i];
+          if (ch === ' ') {
+            html += '<span class="kid-name-space"></span>';
+          } else {
+            html += '<span class="kid-name-letter">' + escapeHtml(ch) + '</span>';
+          }
+        }
+        return html;
+      }
+
+      function computeNameStrokePx(nameSize) {
+        return Math.max(1.1, Math.min(2.9, nameSize * 0.058)).toFixed(2) + 'px';
+      }
+
+      function buildWhatsAppConfirmUrl(cfg, guest) {
+        const phone = cleanPhoneDigits(cfg.whatsapp);
+        const guestName = (guest && guest.name ? guest.name.trim() : 'un invitado');
+        const passesStr = (guest && guest.passes && guest.passes.trim())
+          ? ' (' + guest.passes.trim() + ')'
+          : '';
+        const text = '¡Hola! Soy ' + guestName + passesStr + '. ¡Confirmo mi asistencia al cumple de ' + (cfg.kidName || 'la fiesta') + '! 🦜🌴🎂';
+        return phone
+          ? 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text)
+          : 'https://wa.me/?text=' + encodeURIComponent(text);
+      }
+
+      function buildCardCSSVars(cfg) {
+        const nameSize = clampNumber(cfg.nameSize, 16, 68, DEFAULT_CONFIG.nameSize);
+        return [
+          '--name-size:' + nameSize + 'px',
+          '--name-stroke:' + computeNameStrokePx(nameSize),
+          '--video-height:' + clampNumber(cfg.videoHeight, 120, 420, DEFAULT_CONFIG.videoHeight) + 'px',
+          '--video-scale:' + (clampNumber(cfg.videoScale, 50, 220, DEFAULT_CONFIG.videoScale) / 100),
+          '--video-posy:' + clampNumber(cfg.videoPosY, 0, 100, DEFAULT_CONFIG.videoPosY) + '%',
+          '--video-fit:' + (cfg.videoFit === 'contain' ? 'contain' : 'cover'),
+          '--chars-size:' + clampNumber(cfg.charsSize, 25, 150, DEFAULT_CONFIG.charsSize) + '%',
+          '--chars-x:' + clampNumber(cfg.charsOffsetX, -60, 60, DEFAULT_CONFIG.charsOffsetX) + 'px',
+          '--chars-y:' + clampNumber(cfg.charsOffsetY, -100, 100, DEFAULT_CONFIG.charsOffsetY) + 'px',
+          '--photo-size:' + clampNumber(cfg.photoSize, 70, 220, DEFAULT_CONFIG.photoSize) + 'px',
+          '--photo-zoom:' + (clampNumber(cfg.photoZoom, 100, 250, DEFAULT_CONFIG.photoZoom) / 100),
+          '--photo-posy:' + clampNumber(cfg.photoPosY, 0, 100, DEFAULT_CONFIG.photoPosY) + '%'
+        ].join(';');
+      }
+
+      // Actualiza el tamaño del nombre, 1 línea y todos los sliders en el DOM sin recargar el video
+      function applyLiveMediaCSS() {
+        const cfg = state.config;
+        const nameSize = clampNumber(cfg.nameSize, 16, 68, DEFAULT_CONFIG.nameSize);
+        const nameStroke = computeNameStrokePx(nameSize);
+
+        document.querySelectorAll('.rio-card').forEach(function (card) {
+          card.style.setProperty('--name-size', nameSize + 'px');
+          card.style.setProperty('--name-stroke', nameStroke);
+          card.style.setProperty('--video-height', clampNumber(cfg.videoHeight, 120, 420, DEFAULT_CONFIG.videoHeight) + 'px');
+          card.style.setProperty('--video-scale', String(clampNumber(cfg.videoScale, 50, 220, DEFAULT_CONFIG.videoScale) / 100));
+          card.style.setProperty('--video-posy', clampNumber(cfg.videoPosY, 0, 100, DEFAULT_CONFIG.videoPosY) + '%');
+          card.style.setProperty('--video-fit', cfg.videoFit === 'contain' ? 'contain' : 'cover');
+          card.style.setProperty('--chars-size', clampNumber(cfg.charsSize, 25, 150, DEFAULT_CONFIG.charsSize) + '%');
+          card.style.setProperty('--chars-x', clampNumber(cfg.charsOffsetX, -60, 60, DEFAULT_CONFIG.charsOffsetX) + 'px');
+          card.style.setProperty('--chars-y', clampNumber(cfg.charsOffsetY, -100, 100, DEFAULT_CONFIG.charsOffsetY) + 'px');
+          card.style.setProperty('--photo-size', clampNumber(cfg.photoSize, 70, 220, DEFAULT_CONFIG.photoSize) + 'px');
+          card.style.setProperty('--photo-zoom', String(clampNumber(cfg.photoZoom, 100, 250, DEFAULT_CONFIG.photoZoom) / 100));
+          card.style.setProperty('--photo-posy', clampNumber(cfg.photoPosY, 0, 100, DEFAULT_CONFIG.photoPosY) + '%');
+
+          const nameEl = card.querySelector('[data-slot="kidName"]');
+          if (nameEl) {
+            nameEl.classList.toggle('no-wrap', !!cfg.nameNoWrap);
+          }
+        });
+      }
+
+      function buildCardHTML(cfg, guest, instancePrefix) {
+        const dateInfo = formatDateParts(cfg.date);
+        const timeStr = cfg.time || '18:00';
+        const isPostal = cfg.format === 'postal';
+        const formatClass = 'format-' + (cfg.format || '9-16');
+
+        // 1) Encabezado de video en bucle (mudo) o cielo tropical animado
+        const headerMedia = state.media.videoUrl
+          ? '<video class="rio-header-video" src="' + escapeHtml(state.media.videoUrl) + '" autoplay muted loop playsinline></video>'
+          : getTropicalSkyHeaderSVG();
+
+        // 3) Imagen principal de personajes
+        const charsInner = state.media.charsUrl
+          ? '<img src="' + escapeHtml(state.media.charsUrl) + '" alt="Personajes tropicales" class="rio-custom-chars-img" />'
+          : getHeroMacawsSVG();
+
+        // 4) Marco tropical opcional para la foto del cumpleañero
+        let photoHTML = '';
+        if (cfg.showPhoto) {
+          const imgSrc = state.media.photoUrl || 'https://placehold.co/260x260/ffd426/052e19?text=Foto+%F0%9F%93%B8';
+          const frameClass = 'frame-' + (cfg.photoFrame || 'circle');
+          photoHTML = `
+            <div class="rio-photo-section">
+              <div class="rio-photo-frame ${frameClass}">
+                <div class="rio-photo-inner">
+                  <img src="${escapeHtml(imgSrc)}" alt="Foto de ${escapeHtml(cfg.kidName)}"
+                    class="rio-photo-img"
+                    onerror="this.src='https://placehold.co/260x260/ffd426/052e19?text=Foto'" />
+                </div>
+                <span class="absolute -top-2.5 -left-2 text-xl drop-shadow pointer-events-none">🌺</span>
+                <span class="absolute -bottom-2 -right-2 text-xl drop-shadow pointer-events-none">🦜</span>
+              </div>
+            </div>
+          `;
+        }
+
+        const guestName = (guest && guest.name && guest.name.trim()) ? guest.name.trim() : 'Invitado Especial';
+        const guestPasses = (guest && guest.passes && guest.passes.trim()) ? guest.passes.trim() : '';
+        const guestNote = (guest && guest.note && guest.note.trim()) ? guest.note.trim() : '';
+
+        // Columna de Lugar (abre Google Maps en nueva pestaña si hay URL)
+        const hasMaps = cfg.mapsUrl && cfg.mapsUrl.trim().length > 4;
+        const placeInner = `
+          <div class="text-[11px] font-extrabold uppercase tracking-wider text-yellow-300 leading-none mb-1">
+            📍 LUGAR
+          </div>
+          <div class="font-fredoka font-bold text-sm sm:text-base text-white leading-tight break-words" data-slot="place">
+            ${escapeHtml(cfg.place || 'En mi casa')}
+          </div>
+          ${hasMaps ? '<div class="text-[10px] font-extrabold text-emerald-300 underline mt-0.5">Ver en Maps ↗</div>' : ''}
+        `;
+        const placeColHTML = hasMaps
+          ? '<a href="' + escapeHtml(cfg.mapsUrl.trim()) + '" target="_blank" rel="noopener noreferrer" class="block hover:scale-105 transition">' + placeInner + '</a>'
+          : '<div>' + placeInner + '</div>';
+
+        const rsvpUrl = buildWhatsAppConfirmUrl(cfg, guest);
+        const noWrapClass = cfg.nameNoWrap ? ' no-wrap' : '';
+
+        const detailsInnerHTML = `
+          ${photoHTML}
+
+          <!-- 5) Bloque personalizado del invitado -->
+          <div class="bg-[#042414]/60 backdrop-blur-md border border-emerald-300/30 rounded-2xl p-3 text-center mb-3 shadow-inner">
+            <div class="flex flex-wrap items-center justify-center gap-1.5 mb-1">
+              <span class="inline-flex items-center gap-1 bg-yellow-400 text-[#052e19] font-extrabold text-xs px-3 py-0.5 rounded-full shadow-sm">
+                ✨ Para: <span data-slot="guestName">${escapeHtml(guestName)}</span>
+              </span>
+              <span data-slot="guestPassesWrap" class="${guestPasses ? 'inline-flex' : 'hidden'} items-center gap-1 bg-emerald-400/25 border border-emerald-300/50 text-emerald-100 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full">
+                🎟️ <span data-slot="guestPasses">${escapeHtml(guestPasses)}</span>
+              </span>
+            </div>
+            <p data-slot="message" class="${cfg.message ? '' : 'hidden'} text-xs sm:text-[13px] text-emerald-50 font-semibold leading-snug mt-1.5">${escapeHtml(cfg.message)}</p>
+            <p data-slot="guestNote" class="${guestNote ? '' : 'hidden'} text-xs text-yellow-300 font-extrabold mt-1.5 italic">“${escapeHtml(guestNote)}”</p>
+          </div>
+
+          <!-- 6) Cuenta regresiva en vivo -->
+          <div class="mb-2">
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-yellow-300/95 text-center mb-1.5">
+              ⏳ Faltan para la fiesta
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 max-w-[316px] mx-auto" data-countdown-box="${instancePrefix}">
+              <div class="bg-[#031d10]/80 border border-emerald-400/35 rounded-xl py-1.5 text-center">
+                <div class="cd-days font-baloo font-extrabold text-lg sm:text-xl text-yellow-300 leading-none">--</div>
+                <div class="text-[9px] font-bold uppercase text-emerald-200 mt-0.5">Días</div>
+              </div>
+              <div class="bg-[#031d10]/80 border border-emerald-400/35 rounded-xl py-1.5 text-center">
+                <div class="cd-hours font-baloo font-extrabold text-lg sm:text-xl text-white leading-none">--</div>
+                <div class="text-[9px] font-bold uppercase text-emerald-200 mt-0.5">Horas</div>
+              </div>
+              <div class="bg-[#031d10]/80 border border-emerald-400/35 rounded-xl py-1.5 text-center">
+                <div class="cd-mins font-baloo font-extrabold text-lg sm:text-xl text-white leading-none">--</div>
+                <div class="text-[9px] font-bold uppercase text-emerald-200 mt-0.5">Min</div>
+              </div>
+              <div class="bg-[#031d10]/80 border border-emerald-400/35 rounded-xl py-1.5 text-center">
+                <div class="cd-secs font-baloo font-extrabold text-lg sm:text-xl text-teal-300 leading-none">--</div>
+                <div class="text-[9px] font-bold uppercase text-emerald-200 mt-0.5">Seg</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7) Barra inferior de 3 columnas: FECHA | LUGAR | HORA -->
+          <div class="rio-info-bar">
+            <div class="rio-info-col-item">
+              <div data-slot="day" class="font-baloo font-extrabold text-2xl sm:text-3xl text-white leading-none pb-1 border-b border-yellow-300/60 inline-block min-w-[44px]">
+                ${escapeHtml(dateInfo.day)}
+              </div>
+              <div data-slot="month" class="text-xs font-extrabold text-emerald-100 mt-1">${escapeHtml(dateInfo.month)}</div>
+            </div>
+
+            <div class="rio-info-col-mid" data-slot="placeCol">
+              ${placeColHTML}
+            </div>
+
+            <div class="rio-info-col-item">
+              <div data-slot="time" class="font-baloo font-extrabold text-xl sm:text-2xl text-white leading-none pb-1 border-b border-yellow-300/60 inline-block min-w-[54px]">
+                ${escapeHtml(timeStr)}
+              </div>
+              <div class="text-xs font-extrabold text-emerald-100 mt-1">Horas</div>
+            </div>
+          </div>
+
+          <!-- 8) Botones de acción -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+            <a data-slot="rsvpLink" href="${escapeHtml(rsvpUrl)}" target="_blank" rel="noopener noreferrer"
+              class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-[#16c964] to-[#0ea350] hover:brightness-110 text-white font-extrabold text-xs sm:text-[13px] shadow-lg shadow-emerald-950/50 transition active:scale-95 text-center">
+              <span>✅</span>
+              <span>Confirmar por WhatsApp</span>
+            </a>
+            <button type="button" data-open-cake="true"
+              class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-[#ffd426] to-[#ff7b1a] hover:brightness-110 text-[#052e19] font-extrabold text-xs sm:text-[13px] shadow-lg shadow-emerald-950/50 transition active:scale-95">
+              <span>🎂</span>
+              <span>¡Soplar las velitas!</span>
+            </button>
+          </div>
+        `;
+
+        const visualAndJungleTop = `
+          <div class="rio-visual-col">
+            <!-- 1) Video en bucle mudo o cielo tropical -->
+            <div class="rio-video-header">
+              ${headerMedia}
+              <div class="rio-video-fade-bottom"></div>
+            </div>
+
+            <!-- Selva verde con degradado superior transparente hacia el video -->
+            <div class="rio-jungle-body">
+              ${getJungleBackdropSVG()}
+
+              <!-- 2) Bloque del Cumpleañero (ENTRE EL VIDEO Y LOS PERSONAJES) -->
+              <div class="kid-hero-header">
+                <div data-slot="subtitle" class="kid-festive-subtitle ${cfg.subtitle ? '' : 'hidden'}">${escapeHtml(cfg.subtitle)}</div>
+                <h2 data-slot="kidName" class="kid-name-3d${noWrapClass}">${build3DKidNameHTML(cfg.kidName)}</h2>
+                <div class="kid-age-ribbon">
+                  <span>✨</span>
+                  <span data-slot="kidAge">${escapeHtml(cfg.kidAge || '¡Cumple 5 Años!')}</span>
+                  <span>✨</span>
+                </div>
+              </div>
+
+              <!-- 3) Imagen principal de personajes -->
+              <div class="rio-chars-stage">
+                <div class="rio-chars-media-wrap">
+                  ${charsInner}
+                </div>
+              </div>
+
+              ${!isPostal ? '<div class="rio-details-content">' + detailsInnerHTML + '</div>' : ''}
+            </div>
+          </div>
+        `;
+
+        const postalRightCol = isPostal
+          ? '<div class="rio-info-col">' + getJungleBackdropSVG() + '<div class="relative z-10">' + detailsInnerHTML + '</div></div>'
+          : '';
+
+        return `
+          <article class="rio-card ${formatClass} animate-card-enter" data-card-format="${escapeHtml(cfg.format)}" style="${buildCardCSSVars(cfg)}">
+            ${visualAndJungleTop}
+            ${postalRightCol}
+          </article>
+        `;
+      }
+
+      // Actualiza textos de la tarjeta en vivo sin reconstruir el <video> (cero parpadeo)
+      function updatePreviewTextInPlace() {
+        const stage = document.getElementById('live-preview-stage');
+        if (!stage) return;
+        const card = stage.querySelector('.rio-card');
+        if (!card) {
+          renderLivePreview(true);
+          return;
+        }
+
+        const cfg = state.config;
+        const guest = state.guest;
+        const dateInfo = formatDateParts(cfg.date);
+
+        const elSub = card.querySelector('[data-slot="subtitle"]');
+        if (elSub) {
+          elSub.textContent = cfg.subtitle || '';
+          elSub.classList.toggle('hidden', !cfg.subtitle);
+        }
+        const elName = card.querySelector('[data-slot="kidName"]');
+        if (elName) {
+          elName.innerHTML = build3DKidNameHTML(cfg.kidName);
+          elName.classList.toggle('no-wrap', !!cfg.nameNoWrap);
+        }
+
+        const elAge = card.querySelector('[data-slot="kidAge"]');
+        if (elAge) elAge.textContent = cfg.kidAge || '¡Cumple 5 Años!';
+
+        const elGuest = card.querySelector('[data-slot="guestName"]');
+        if (elGuest) elGuest.textContent = (guest.name && guest.name.trim()) ? guest.name.trim() : 'Invitado Especial';
+
+        const elPassesWrap = card.querySelector('[data-slot="guestPassesWrap"]');
+        const elPasses = card.querySelector('[data-slot="guestPasses"]');
+        if (elPassesWrap && elPasses) {
+          const hasP = !!(guest.passes && guest.passes.trim());
+          elPasses.textContent = hasP ? guest.passes.trim() : '';
+          elPassesWrap.classList.toggle('hidden', !hasP);
+          elPassesWrap.classList.toggle('inline-flex', hasP);
+        }
+
+        const elMsg = card.querySelector('[data-slot="message"]');
+        if (elMsg) {
+          elMsg.textContent = cfg.message || '';
+          elMsg.classList.toggle('hidden', !cfg.message);
+        }
+
+        const elNote = card.querySelector('[data-slot="guestNote"]');
+        if (elNote) {
+          const hasN = !!(guest.note && guest.note.trim());
+          elNote.textContent = hasN ? '“' + guest.note.trim() + '”' : '';
+          elNote.classList.toggle('hidden', !hasN);
+        }
+
+        const elDay = card.querySelector('[data-slot="day"]');
+        if (elDay) elDay.textContent = dateInfo.day;
+        const elMonth = card.querySelector('[data-slot="month"]');
+        if (elMonth) elMonth.textContent = dateInfo.month;
+        const elTime = card.querySelector('[data-slot="time"]');
+        if (elTime) elTime.textContent = cfg.time || '18:00';
+
+        const elPlaceCol = card.querySelector('[data-slot="placeCol"]');
+        if (elPlaceCol) {
+          const hasMaps = cfg.mapsUrl && cfg.mapsUrl.trim().length > 4;
+          const placeInner =
+            '<div class="text-[11px] font-extrabold uppercase tracking-wider text-yellow-300 leading-none mb-1">📍 LUGAR</div>' +
+            '<div class="font-fredoka font-bold text-sm sm:text-base text-white leading-tight break-words">' + escapeHtml(cfg.place || 'En mi casa') + '</div>' +
+            (hasMaps ? '<div class="text-[10px] font-extrabold text-emerald-300 underline mt-0.5">Ver en Maps ↗</div>' : '');
+          elPlaceCol.innerHTML = hasMaps
+            ? '<a href="' + escapeHtml(cfg.mapsUrl.trim()) + '" target="_blank" rel="noopener noreferrer" class="block hover:scale-105 transition">' + placeInner + '</a>'
+            : '<div>' + placeInner + '</div>';
+        }
+
+        const elRsvp = card.querySelector('[data-slot="rsvpLink"]');
+        if (elRsvp) elRsvp.setAttribute('href', buildWhatsAppConfirmUrl(cfg, guest));
+
+        updateAllCountdowns();
+      }
+
+      function bindCardDynamicElements(root) {
+        root.querySelectorAll('video.rio-header-video').forEach(enforceMutedLoopVideo);
+        root.querySelectorAll('[data-open-cake="true"]').forEach(function (btn) {
+          btn.addEventListener('click', openCakeModal);
+        });
+      }
+
+      function renderLivePreview(forceRebuild) {
+        const stage = document.getElementById('live-preview-stage');
+        if (!stage) return;
+        const existingCard = stage.querySelector('.rio-card');
+        if (!forceRebuild && existingCard && existingCard.getAttribute('data-card-format') === state.config.format) {
+          updatePreviewTextInPlace();
+          applyLiveMediaCSS();
+          return;
+        }
+        stage.innerHTML = buildCardHTML(state.config, state.guest, 'preview');
+        bindCardDynamicElements(stage);
+        updateAllCountdowns();
+      }
+
+      function renderGuestCard() {
+        const container = document.getElementById('guest-card-container');
+        if (!container) return;
+        container.innerHTML = buildCardHTML(state.config, state.guest, 'guest');
+        bindCardDynamicElements(container);
+        updateAllCountdowns();
+      }
+
+      /* ===================================================================
+         9. CUENTA REGRESIVA EN VIVO
+         =================================================================== */
+      function updateAllCountdowns() {
+        const boxes = document.querySelectorAll('[data-countdown-box]');
+        if (!boxes.length) return;
+
+        const dateStr = state.config.date || '2026-12-17';
+        const timeStr = state.config.time || '18:00';
+        const target = new Date(dateStr + 'T' + timeStr + ':00');
+        const now = new Date();
+        let diff = target.getTime() - now.getTime();
+        if (isNaN(diff)) diff = 0;
+
+        let d = 0, h = 0, m = 0, s = 0;
+        if (diff > 0) {
+          d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          m = Math.floor((diff / (1000 * 60)) % 60);
+          s = Math.floor((diff / 1000) % 60);
+        }
+
+        const pad = function (n) { return String(n).padStart(2, '0'); };
+        boxes.forEach(function (box) {
+          const elD = box.querySelector('.cd-days');
+          const elH = box.querySelector('.cd-hours');
+          const elM = box.querySelector('.cd-mins');
+          const elS = box.querySelector('.cd-secs');
+          if (elD) elD.textContent = d;
+          if (elH) elH.textContent = pad(h);
+          if (elM) elM.textContent = pad(m);
+          if (elS) elS.textContent = pad(s);
+        });
+      }
+
+      function startCountdownInterval() {
+        if (state.countdownTimer) clearInterval(state.countdownTimer);
+        updateAllCountdowns();
+        state.countdownTimer = setInterval(updateAllCountdowns, 1000);
+      }
+
+      /* ===================================================================
+         10. EXPERIENCIA INTERACTIVA DEL INVITADO (SOBRE 3D -> TARJETA)
+         =================================================================== */
+      function enterGuestExperience(guestObj, fromEditor) {
+        state.testingFromEditor = !!fromEditor;
+        if (guestObj) {
+          state.guest = {
+            name: guestObj.name || 'Invitado Especial',
+            passes: guestObj.passes || '',
+            note: guestObj.note || ''
+          };
+        }
+
+        document.getElementById('editor-view').classList.add('hidden');
+        document.getElementById('guest-view').classList.remove('hidden');
+
+        const backBtn = document.getElementById('btn-back-to-editor');
+        if (backBtn) backBtn.classList.toggle('hidden', !state.testingFromEditor);
+
+        const envScreen = document.getElementById('guest-screen-envelope');
+        const cardScreen = document.getElementById('guest-screen-card');
+        const envEl = document.getElementById('interactive-envelope');
+        const muteBtn = document.getElementById('btn-guest-mute');
+
+        envEl.classList.remove('opened');
+        envScreen.classList.remove('hidden');
+        envScreen.style.opacity = '1';
+        cardScreen.classList.add('hidden');
+        muteBtn.classList.add('hidden');
+
+        document.getElementById('envelope-guest-greeting').textContent =
+          '¡' + state.guest.name + ', tienes una invitación especial!';
+
+        const passesEl = document.getElementById('envelope-guest-passes');
+        if (state.guest.passes && state.guest.passes.trim()) {
+          passesEl.textContent = '🎟️ ' + state.guest.passes.trim();
+          passesEl.classList.remove('hidden');
+        } else {
+          passesEl.classList.add('hidden');
+        }
+
+        document.getElementById('envelope-letter-title').textContent =
+          '¡Cumple de ' + (state.config.kidName || 'Gabriel') + '!';
+
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      let envelopeOpeningLock = false;
+      function triggerOpenEnvelope() {
+        if (envelopeOpeningLock) return;
+        envelopeOpeningLock = true;
+
+        const envEl = document.getElementById('interactive-envelope');
+        const envScreen = document.getElementById('guest-screen-envelope');
+        const cardScreen = document.getElementById('guest-screen-card');
+        const muteBtn = document.getElementById('btn-guest-mute');
+
+        envEl.classList.add('opened');
+        FXCanvas.burstConfetti(140);
+
+        // Inicia la música al interactuar (desbloquea autoplay en móviles)
+        AudioEngine.startMusic();
+
+        setTimeout(function () {
+          envScreen.style.transition = 'opacity 0.45s ease';
+          envScreen.style.opacity = '0';
+          setTimeout(function () {
+            envScreen.classList.add('hidden');
+            renderGuestCard();
+            cardScreen.classList.remove('hidden');
+            muteBtn.classList.remove('hidden');
+            AudioEngine.updateButtons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            envelopeOpeningLock = false;
+          }, 420);
+        }, 700);
+      }
+
+      function exitGuestToEditor() {
+        AudioEngine.stopMusic();
+        closeCakeModal();
+        document.getElementById('guest-view').classList.add('hidden');
+        document.getElementById('editor-view').classList.remove('hidden');
+        state.testingFromEditor = false;
+        renderLivePreview(true);
+      }
+
+      /* ===================================================================
+         11. PASTEL INTERACTIVO: 5 VELITAS CON APAGADO REAL Y HUMO
+         =================================================================== */
+      const TOTAL_CANDLES = 5;
+      let remainingCandles = TOTAL_CANDLES;
+      let blowAllTimers = [];
+
+      function clearBlowAllTimers() {
+        blowAllTimers.forEach(function (t) { clearTimeout(t); });
+        blowAllTimers = [];
+      }
+
+      function updateCakeStatusUI() {
+        const counterEl = document.getElementById('cake-counter-text');
+        const celebBox = document.getElementById('cake-celebration-box');
+
+        if (remainingCandles > 0) {
+          const word = remainingCandles === 1 ? 'velita' : 'velitas';
+          counterEl.textContent = 'Faltan ' + remainingCandles + ' ' + word + ' por apagar — ¡Toca cada llama! 👇';
+          celebBox.classList.add('hidden');
+        } else {
+          counterEl.textContent = '¡Las 5 velitas están apagadas! ✨';
+          celebBox.classList.remove('hidden');
+        }
+      }
+
+      function extinguishCandle(candleBtn) {
+        if (!candleBtn || candleBtn.getAttribute('data-lit') !== 'true') return;
+
+        candleBtn.setAttribute('data-lit', 'false');
+        candleBtn.classList.add('extinguished');
+
+        remainingCandles = Math.max(0, remainingCandles - 1);
+        updateCakeStatusUI();
+
+        // SOLO cuando las 5 velitas están apagadas explotan los fuegos artificiales
+        if (remainingCandles === 0) {
+          FXCanvas.launchFireworks();
+        }
+      }
+
+      function buildCakeCandles() {
+        clearBlowAllTimers();
+        const row = document.getElementById('cake-candles-row');
+        const ageBadge = document.getElementById('cake-age-badge');
+
+        remainingCandles = TOTAL_CANDLES;
+        ageBadge.textContent = state.config.kidAge || '¡Feliz Cumple!';
+        row.innerHTML = '';
+
+        for (let i = 0; i < TOTAL_CANDLES; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'candle-btn';
+          btn.setAttribute('data-lit', 'true');
+          btn.setAttribute('aria-label', 'Soplar velita ' + (i + 1));
+          btn.innerHTML = `
+            <span class="candle-glow"></span>
+            <span class="candle-flame"></span>
+            <span class="candle-smoke">
+              <span class="smoke-puff puff-a"></span>
+              <span class="smoke-puff puff-b"></span>
+            </span>
+            <span class="candle-wick"></span>
+            <span class="candle-stick"></span>
+          `;
+
+          btn.addEventListener('click', function () {
+            extinguishCandle(btn);
+          });
+
+          row.appendChild(btn);
+        }
+
+        updateCakeStatusUI();
+      }
+
+      function blowAllCandles() {
+        clearBlowAllTimers();
+        const litBtns = Array.from(document.querySelectorAll('#cake-candles-row .candle-btn[data-lit="true"]'));
+        if (!litBtns.length) return;
+
+        litBtns.forEach(function (btn, idx) {
+          const timer = setTimeout(function () {
+            extinguishCandle(btn);
+          }, idx * 130);
+          blowAllTimers.push(timer);
+        });
+      }
+
+      function openCakeModal() {
+        buildCakeCandles();
+        document.getElementById('cake-modal').classList.remove('hidden');
+      }
+
+      function closeCakeModal() {
+        clearBlowAllTimers();
+        document.getElementById('cake-modal').classList.add('hidden');
+      }
+
+      /* ===================================================================
+         12. ENLACES COMPACTOS (?d=...) CON TODOS LOS DATOS Y SLIDERS
+         =================================================================== */
+      function getDetectedBaseUrl() {
+        try {
+          if (window.location && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+            return window.location.origin + window.location.pathname;
+          }
+        } catch (e) {}
+        return 'https://tu-usuario.github.io/cumple-rio/';
+      }
+
+      // Empaqueta configuración de la fiesta + tamaño/línea del nombre + sliders + invitado
+      function packLinkPayload(cfg, guestName, guestPasses, guestNote) {
+        return {
+          s: cfg.subtitle,
+          n: cfg.kidName,
+          ns: clampNumber(cfg.nameSize, 16, 68, DEFAULT_CONFIG.nameSize),
+          nw: cfg.nameNoWrap ? 1 : 0,
+          a: cfg.kidAge,
+          dt: cfg.date,
+          tm: cfg.time,
+          pl: cfg.place,
+          mp: cfg.mapsUrl,
+          wa: cfg.whatsapp,
+          mg: cfg.message,
+          fm: cfg.format,
+          vh: cfg.videoHeight,
+          vs: cfg.videoScale,
+          vy: cfg.videoPosY,
+          vf: cfg.videoFit,
+          cs: cfg.charsSize,
+          cy: cfg.charsOffsetY,
+          cx: cfg.charsOffsetX,
+          sp: cfg.showPhoto ? 1 : 0,
+          pf: cfg.photoFrame,
+          ps: cfg.photoSize,
+          pz: cfg.photoZoom,
+          py: cfg.photoPosY,
+          sm: cfg.useSampleMusic ? 1 : 0,
+          gn: (guestName || 'Invitado Especial').trim(),
+          gp: (guestPasses || '').trim(),
+          nt: (guestNote || '').trim()
+        };
+      }
+
+      function unpackLinkPayload(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        return {
+          config: {
+            subtitle: raw.s !== undefined ? raw.s : DEFAULT_CONFIG.subtitle,
+            kidName: raw.n !== undefined ? raw.n : DEFAULT_CONFIG.kidName,
+            nameSize: raw.ns !== undefined ? clampNumber(raw.ns, 16, 68, DEFAULT_CONFIG.nameSize) : DEFAULT_CONFIG.nameSize,
+            nameNoWrap: raw.nw !== undefined ? !!raw.nw : DEFAULT_CONFIG.nameNoWrap,
+            kidAge: raw.a !== undefined ? raw.a : DEFAULT_CONFIG.kidAge,
+            date: raw.dt !== undefined ? raw.dt : DEFAULT_CONFIG.date,
+            time: raw.tm !== undefined ? raw.tm : DEFAULT_CONFIG.time,
+            place: raw.pl !== undefined ? raw.pl : DEFAULT_CONFIG.place,
+            mapsUrl: raw.mp !== undefined ? raw.mp : DEFAULT_CONFIG.mapsUrl,
+            whatsapp: raw.wa !== undefined ? raw.wa : DEFAULT_CONFIG.whatsapp,
+            message: raw.mg !== undefined ? raw.mg : DEFAULT_CONFIG.message,
+            format: raw.fm !== undefined ? raw.fm : DEFAULT_CONFIG.format,
+            videoHeight: raw.vh !== undefined ? Number(raw.vh) : DEFAULT_CONFIG.videoHeight,
+            videoScale: raw.vs !== undefined ? Number(raw.vs) : DEFAULT_CONFIG.videoScale,
+            videoPosY: raw.vy !== undefined ? Number(raw.vy) : DEFAULT_CONFIG.videoPosY,
+            videoFit: raw.vf !== undefined ? raw.vf : DEFAULT_CONFIG.videoFit,
+            charsSize: raw.cs !== undefined ? Number(raw.cs) : DEFAULT_CONFIG.charsSize,
+            charsOffsetY: raw.cy !== undefined ? Number(raw.cy) : DEFAULT_CONFIG.charsOffsetY,
+            charsOffsetX: raw.cx !== undefined ? Number(raw.cx) : DEFAULT_CONFIG.charsOffsetX,
+            showPhoto: raw.sp !== undefined ? !!raw.sp : DEFAULT_CONFIG.showPhoto,
+            photoFrame: raw.pf !== undefined ? raw.pf : DEFAULT_CONFIG.photoFrame,
+            photoSize: raw.ps !== undefined ? Number(raw.ps) : DEFAULT_CONFIG.photoSize,
+            photoZoom: raw.pz !== undefined ? Number(raw.pz) : DEFAULT_CONFIG.photoZoom,
+            photoPosY: raw.py !== undefined ? Number(raw.py) : DEFAULT_CONFIG.photoPosY,
+            useSampleMusic: raw.sm !== undefined ? !!raw.sm : DEFAULT_CONFIG.useSampleMusic
+          },
+          guest: {
+            name: raw.gn || 'Invitado Especial',
+            passes: raw.gp || '',
+            note: raw.nt || ''
+          }
+        };
+      }
+
+      function buildInvitationLink(guestName, guestPasses, guestNote) {
+        let base = (state.baseUrl || getDetectedBaseUrl()).trim();
+        base = base.split('?')[0].split('#')[0];
+
+        const packed = packLinkPayload(state.config, guestName, guestPasses, guestNote);
+        const encoded = toBase64Url(JSON.stringify(packed));
+        return base + '?d=' + encoded;
+      }
+
+      function buildWhatsAppShareUrl(guestName, inviteUrl) {
+        const kid = state.config.kidName || 'la fiesta';
+        const text = '¡Hola ' + guestName + '! 🦜🌴 Te enviamos una invitación interactiva súper especial para el cumpleaños de ' + kid + '. ¡Toca el enlace para abrir tu sobre! ✉️👇\n' + inviteUrl;
+        return 'https://wa.me/?text=' + encodeURIComponent(text);
+      }
+
+      /* ===================================================================
+         13. DETECCIÓN AUTOMÁTICA DE MEDIOS EN LA MISMA CARPETA (NIVEL 2)
+         =================================================================== */
+      function updateMusicStatusUI() {
+        const statusEl = document.getElementById('status-music');
+        const clearBtn = document.getElementById('btn-clear-music');
+        const sampleChk = document.getElementById('chk-sample-music');
+        const sampleRow = document.getElementById('sample-music-row');
+
+        if (state.media.musicUrl) {
+          if (statusEl) {
+            const label = state.media.musicName ? ' (' + escapeHtml(state.media.musicName) + ')' : '';
+            statusEl.innerHTML = '🎵 Canción personalizada activa' + label + ' — <strong>suena de forma exclusiva</strong>';
+            statusEl.className = 'text-[11px] font-bold text-emerald-700 mt-0.5 leading-snug';
+          }
+          if (clearBtn) clearBtn.classList.remove('hidden');
+          if (sampleChk) {
+            sampleChk.checked = false;
+            sampleChk.disabled = true;
+          }
+          if (sampleRow) sampleRow.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+          if (statusEl) {
+            statusEl.innerHTML = '🔇 Sin MP3 cargado: sube tu canción local o coloca <code class="bg-white px-1 rounded">musica.mp3</code> en tu carpeta';
+            statusEl.className = 'text-[11px] font-bold text-slate-600 mt-0.5 leading-snug';
+          }
+          if (clearBtn) clearBtn.classList.add('hidden');
+          if (sampleChk) {
+            sampleChk.disabled = false;
+            sampleChk.checked = !!state.config.useSampleMusic;
+          }
+          if (sampleRow) sampleRow.classList.remove('opacity-50', 'pointer-events-none');
+        }
+      }
+
+      function detectLocalFolderMedia() {
+        if (!window.location || (window.location.protocol !== 'http:' && window.location.protocol !== 'https:')) {
+          return;
+        }
+
+        // personajes.png
+        const imgChars = new Image();
+        imgChars.onload = function () {
+          if (!state.media.charsUrl) {
+            state.media.charsUrl = './personajes.png';
+            const st = document.getElementById('status-chars');
+            if (st) {
+              st.textContent = 'Detectado en carpeta: personajes.png';
+              st.className = 'text-[11px] font-bold text-emerald-700 mt-0.5';
+            }
+            refreshActiveCardView(true);
+          }
+        };
+        imgChars.src = './personajes.png';
+
+        // foto.jpg
+        const imgPhoto = new Image();
+        imgPhoto.onload = function () {
+          if (!state.media.photoUrl) {
+            state.media.photoUrl = './foto.jpg';
+            refreshActiveCardView(true);
+          }
+        };
+        imgPhoto.src = './foto.jpg';
+
+        // video.mp4
+        fetch('./video.mp4', { method: 'HEAD' }).then(function (res) {
+          if (res.ok && !state.media.videoUrl) {
+            state.media.videoUrl = './video.mp4';
+            const st = document.getElementById('status-video');
+            if (st) {
+              st.textContent = 'Detectado en carpeta: video.mp4 (bucle infinito y sin audio)';
+              st.className = 'text-[11px] font-bold text-emerald-700 mt-0.5';
+            }
+            refreshActiveCardView(true);
+          }
+        }).catch(function () {});
+
+        // musica.mp3
+        fetch('./musica.mp3', { method: 'HEAD' }).then(function (res) {
+          if (res.ok && !state.media.musicUrl) {
+            state.media.musicUrl = './musica.mp3';
+            state.media.musicName = 'musica.mp3';
+            updateMusicStatusUI();
+          }
+        }).catch(function () {});
+      }
+
+      function refreshActiveCardView(forceRebuild) {
+        if (state.mode === 'editor' && !state.testingFromEditor) {
+          renderLivePreview(forceRebuild);
+        } else if (!document.getElementById('guest-screen-card').classList.contains('hidden')) {
+          renderGuestCard();
+        }
+      }
+
+      /* ===================================================================
+         14. SINCRONIZACIÓN Y EVENTOS DEL EDITOR
+         =================================================================== */
+      function syncSliderDisplays() {
+        const c = state.config;
+        const nSize = clampNumber(c.nameSize, 16, 68, DEFAULT_CONFIG.nameSize);
+        document.getElementById('rng-name-size').value = nSize;
+        document.getElementById('val-name-size').textContent = nSize + 'px';
+        document.getElementById('chk-name-nowrap').checked = !!c.nameNoWrap;
+
+        document.getElementById('rng-video-height').value = c.videoHeight;
+        document.getElementById('val-video-height').textContent = c.videoHeight + 'px';
+        document.getElementById('rng-video-scale').value = c.videoScale;
+        document.getElementById('val-video-scale').textContent = c.videoScale + '%';
+        document.getElementById('rng-video-posy').value = c.videoPosY;
+        document.getElementById('val-video-posy').textContent = c.videoPosY + '%';
+        document.getElementById('sel-video-fit').value = c.videoFit || 'cover';
+
+        document.getElementById('rng-chars-size').value = c.charsSize;
+        document.getElementById('val-chars-size').textContent = c.charsSize + '%';
+        document.getElementById('rng-chars-y').value = c.charsOffsetY;
+        document.getElementById('val-chars-y').textContent = c.charsOffsetY + 'px';
+        document.getElementById('rng-chars-x').value = c.charsOffsetX;
+        document.getElementById('val-chars-x').textContent = c.charsOffsetX + 'px';
+
+        document.getElementById('rng-photo-size').value = c.photoSize;
+        document.getElementById('val-photo-size').textContent = c.photoSize + 'px';
+        document.getElementById('rng-photo-zoom').value = c.photoZoom;
+        document.getElementById('val-photo-zoom').textContent = c.photoZoom + '%';
+        document.getElementById('rng-photo-posy').value = c.photoPosY;
+        document.getElementById('val-photo-posy').textContent = c.photoPosY + '%';
+      }
+
+      function updateFormatButtonsUI() {
+        document.querySelectorAll('.format-choice-btn').forEach(function (btn) {
+          const active = btn.getAttribute('data-format') === state.config.format;
+          btn.className = active
+            ? 'format-choice-btn p-2.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50 text-emerald-900 font-extrabold text-xs flex flex-col items-center gap-1 transition shadow-sm'
+            : 'format-choice-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-1 transition hover:border-emerald-300';
+        });
+      }
+
+      function syncInputsFromState() {
+        const c = state.config;
+        document.getElementById('inp-subtitle').value = c.subtitle || '';
+        document.getElementById('inp-kid-name').value = c.kidName || '';
+        document.getElementById('inp-kid-age').value = c.kidAge || '';
+        document.getElementById('inp-date').value = c.date || '';
+        document.getElementById('inp-time').value = c.time || '';
+        document.getElementById('inp-place').value = c.place || '';
+        document.getElementById('inp-maps').value = c.mapsUrl || '';
+        document.getElementById('inp-whatsapp').value = c.whatsapp || '';
+        document.getElementById('inp-message').value = c.message || '';
+
+        document.getElementById('chk-show-photo').checked = !!c.showPhoto;
+        document.getElementById('photo-options-box').classList.toggle('hidden', !c.showPhoto);
+        document.getElementById('sel-photo-frame').value = c.photoFrame || 'circle';
+
+        document.getElementById('inp-guest-name').value = state.guest.name || '';
+        document.getElementById('inp-guest-passes').value = state.guest.passes || '';
+        document.getElementById('inp-guest-note').value = state.guest.note || '';
+        document.getElementById('inp-base-url').value = state.baseUrl;
+
+        syncSliderDisplays();
+        updateFormatButtonsUI();
+        updateMusicStatusUI();
+      }
+
+      function bindEditorEvents() {
+        // Pestañas móviles (Editar / Vista Previa)
+        const tabEdit = document.getElementById('mobile-tab-edit');
+        const tabPreview = document.getElementById('mobile-tab-preview');
+        const controlsPanel = document.getElementById('editor-controls-panel');
+        const previewPanel = document.getElementById('editor-preview-panel');
+
+        tabEdit.addEventListener('click', function () {
+          controlsPanel.classList.remove('hidden');
+          previewPanel.classList.add('hidden');
+          tabEdit.className = 'py-2.5 text-sm font-extrabold text-yellow-300 border-b-4 border-yellow-300 transition flex items-center justify-center gap-1.5';
+          tabPreview.className = 'py-2.5 text-sm font-bold text-emerald-200 border-b-4 border-transparent transition flex items-center justify-center gap-1.5';
+        });
+
+        tabPreview.addEventListener('click', function () {
+          controlsPanel.classList.add('hidden');
+          previewPanel.classList.remove('hidden');
+          previewPanel.classList.add('flex');
+          tabPreview.className = 'py-2.5 text-sm font-extrabold text-yellow-300 border-b-4 border-yellow-300 transition flex items-center justify-center gap-1.5';
+          tabEdit.className = 'py-2.5 text-sm font-bold text-emerald-200 border-b-4 border-transparent transition flex items-center justify-center gap-1.5';
+          renderLivePreview(false);
+        });
+
+        // Campos de datos de la fiesta
+        const fieldMap = [
+          ['inp-subtitle', 'subtitle'],
+          ['inp-kid-name', 'kidName'],
+          ['inp-kid-age', 'kidAge'],
+          ['inp-date', 'date'],
+          ['inp-time', 'time'],
+          ['inp-place', 'place'],
+          ['inp-maps', 'mapsUrl'],
+          ['inp-whatsapp', 'whatsapp'],
+          ['inp-message', 'message']
+        ];
+        fieldMap.forEach(function (pair) {
+          const el = document.getElementById(pair[0]);
+          el.addEventListener('input', function () {
+            state.config[pair[1]] = el.value;
+            saveToLocalStorage();
+            updatePreviewTextInPlace();
+          });
+        });
+
+        // --- TAMAÑO DE LETRA DEL NOMBRE Y MANTENER EN 1 SOLA LÍNEA ---
+        document.getElementById('rng-name-size').addEventListener('input', function (e) {
+          state.config.nameSize = clampNumber(e.target.value, 16, 68, DEFAULT_CONFIG.nameSize);
+          document.getElementById('val-name-size').textContent = state.config.nameSize + 'px';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+
+        document.getElementById('chk-name-nowrap').addEventListener('change', function (e) {
+          state.config.nameNoWrap = e.target.checked;
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+
+        document.getElementById('btn-reset-name-size').addEventListener('click', function () {
+          state.config.nameSize = DEFAULT_CONFIG.nameSize;
+          state.config.nameNoWrap = DEFAULT_CONFIG.nameNoWrap;
+          syncSliderDisplays();
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+          showToast('Tamaño del nombre restablecido', '↺');
+        });
+
+        // Botón 💡 Idea de mensaje
+        document.getElementById('btn-idea-msg').addEventListener('click', function () {
+          const idea = MESSAGE_IDEAS[messageIdeaIdx % MESSAGE_IDEAS.length];
+          messageIdeaIdx++;
+          state.config.message = idea;
+          document.getElementById('inp-message').value = idea;
+          saveToLocalStorage();
+          updatePreviewTextInPlace();
+          showToast('¡Nueva idea de mensaje aplicada!', '💡');
+        });
+
+        // Selector de formato
+        document.querySelectorAll('.format-choice-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.config.format = btn.getAttribute('data-format');
+            saveToLocalStorage();
+            updateFormatButtonsUI();
+            renderLivePreview(true);
+          });
+        });
+
+        // --- VIDEO SUPERIOR ---
+        document.getElementById('file-video').addEventListener('change', function (e) {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          state.media.videoUrl = URL.createObjectURL(file);
+          const st = document.getElementById('status-video');
+          st.textContent = 'Cargado: ' + file.name + ' (en bucle y sin audio)';
+          st.className = 'text-[11px] font-bold text-emerald-700 mt-0.5';
+          document.getElementById('btn-clear-video').classList.remove('hidden');
+          renderLivePreview(true);
+          showToast('Video cargado (siempre mudo y en bucle)', '🎥');
+        });
+        document.getElementById('btn-clear-video').addEventListener('click', function () {
+          state.media.videoUrl = null;
+          document.getElementById('file-video').value = '';
+          const st = document.getElementById('status-video');
+          st.textContent = 'Escena animada tropical integrada (bucle infinito y sin audio)';
+          document.getElementById('btn-clear-video').classList.add('hidden');
+          renderLivePreview(true);
+        });
+
+        document.getElementById('rng-video-height').addEventListener('input', function (e) {
+          state.config.videoHeight = Number(e.target.value);
+          document.getElementById('val-video-height').textContent = state.config.videoHeight + 'px';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-video-scale').addEventListener('input', function (e) {
+          state.config.videoScale = Number(e.target.value);
+          document.getElementById('val-video-scale').textContent = state.config.videoScale + '%';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-video-posy').addEventListener('input', function (e) {
+          state.config.videoPosY = Number(e.target.value);
+          document.getElementById('val-video-posy').textContent = state.config.videoPosY + '%';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('sel-video-fit').addEventListener('change', function (e) {
+          state.config.videoFit = e.target.value;
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('btn-reset-video').addEventListener('click', function () {
+          state.config.videoHeight = DEFAULT_CONFIG.videoHeight;
+          state.config.videoScale = DEFAULT_CONFIG.videoScale;
+          state.config.videoPosY = DEFAULT_CONFIG.videoPosY;
+          state.config.videoFit = DEFAULT_CONFIG.videoFit;
+          syncSliderDisplays();
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+          showToast('Ajustes del video restablecidos', '↺');
+        });
+
+        // --- PERSONAJES ---
+        document.getElementById('file-chars').addEventListener('change', function (e) {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          state.media.charsUrl = URL.createObjectURL(file);
+          const st = document.getElementById('status-chars');
+          st.textContent = 'Cargado: ' + file.name;
+          document.getElementById('btn-clear-chars').classList.remove('hidden');
+          renderLivePreview(true);
+          showToast('Imagen de personajes cargada', '🦜');
+        });
+        document.getElementById('btn-clear-chars').addEventListener('click', function () {
+          state.media.charsUrl = null;
+          document.getElementById('file-chars').value = '';
+          document.getElementById('status-chars').textContent = 'Usando guacamayos tropicales SVG integrados';
+          document.getElementById('btn-clear-chars').classList.add('hidden');
+          renderLivePreview(true);
+        });
+
+        document.getElementById('rng-chars-size').addEventListener('input', function (e) {
+          state.config.charsSize = Number(e.target.value);
+          document.getElementById('val-chars-size').textContent = state.config.charsSize + '%';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-chars-y').addEventListener('input', function (e) {
+          state.config.charsOffsetY = Number(e.target.value);
+          document.getElementById('val-chars-y').textContent = state.config.charsOffsetY + 'px';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-chars-x').addEventListener('input', function (e) {
+          state.config.charsOffsetX = Number(e.target.value);
+          document.getElementById('val-chars-x').textContent = state.config.charsOffsetX + 'px';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('btn-reset-chars').addEventListener('click', function () {
+          state.config.charsSize = DEFAULT_CONFIG.charsSize;
+          state.config.charsOffsetY = DEFAULT_CONFIG.charsOffsetY;
+          state.config.charsOffsetX = DEFAULT_CONFIG.charsOffsetX;
+          syncSliderDisplays();
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+          showToast('Ajustes de personajes restablecidos', '↺');
+        });
+
+        // --- FOTO DEL CUMPLEAÑERO ---
+        document.getElementById('chk-show-photo').addEventListener('change', function (e) {
+          state.config.showPhoto = e.target.checked;
+          document.getElementById('photo-options-box').classList.toggle('hidden', !e.target.checked);
+          saveToLocalStorage();
+          renderLivePreview(true);
+        });
+        document.getElementById('sel-photo-frame').addEventListener('change', function (e) {
+          state.config.photoFrame = e.target.value;
+          saveToLocalStorage();
+          renderLivePreview(true);
+        });
+        document.getElementById('file-kid-photo').addEventListener('change', function (e) {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          state.media.photoUrl = URL.createObjectURL(file);
+          state.config.showPhoto = true;
+          document.getElementById('chk-show-photo').checked = true;
+          document.getElementById('photo-options-box').classList.remove('hidden');
+          document.getElementById('btn-clear-photo').classList.remove('hidden');
+          saveToLocalStorage();
+          renderLivePreview(true);
+          showToast('Foto cargada en la tarjeta', '📸');
+        });
+        document.getElementById('btn-clear-photo').addEventListener('click', function () {
+          state.media.photoUrl = null;
+          state.config.showPhoto = false;
+          document.getElementById('chk-show-photo').checked = false;
+          document.getElementById('photo-options-box').classList.add('hidden');
+          document.getElementById('btn-clear-photo').classList.add('hidden');
+          document.getElementById('file-kid-photo').value = '';
+          saveToLocalStorage();
+          renderLivePreview(true);
+        });
+
+        document.getElementById('rng-photo-size').addEventListener('input', function (e) {
+          state.config.photoSize = Number(e.target.value);
+          document.getElementById('val-photo-size').textContent = state.config.photoSize + 'px';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-photo-zoom').addEventListener('input', function (e) {
+          state.config.photoZoom = Number(e.target.value);
+          document.getElementById('val-photo-zoom').textContent = state.config.photoZoom + '%';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('rng-photo-posy').addEventListener('input', function (e) {
+          state.config.photoPosY = Number(e.target.value);
+          document.getElementById('val-photo-posy').textContent = state.config.photoPosY + '%';
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+        });
+        document.getElementById('btn-reset-photo').addEventListener('click', function () {
+          state.config.photoSize = DEFAULT_CONFIG.photoSize;
+          state.config.photoZoom = DEFAULT_CONFIG.photoZoom;
+          state.config.photoPosY = DEFAULT_CONFIG.photoPosY;
+          syncSliderDisplays();
+          applyLiveMediaCSS();
+          saveToLocalStorage();
+          showToast('Ajustes de la foto restablecidos', '↺');
+        });
+
+        // --- AUDIO EXCLUSIVO ---
+        document.getElementById('file-music').addEventListener('change', function (e) {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          state.media.musicUrl = URL.createObjectURL(file);
+          state.media.musicName = file.name;
+          updateMusicStatusUI();
+          if (AudioEngine.isPlaying) AudioEngine.startMusic();
+          showToast('Canción cargada: sonará de forma exclusiva', '🎵');
+        });
+        document.getElementById('btn-clear-music').addEventListener('click', function () {
+          state.media.musicUrl = null;
+          state.media.musicName = '';
+          document.getElementById('file-music').value = '';
+          AudioEngine.stopMusic();
+          updateMusicStatusUI();
+          showToast('Canción quitada', '🔇');
+        });
+        document.getElementById('chk-sample-music').addEventListener('change', function (e) {
+          state.config.useSampleMusic = e.target.checked;
+          saveToLocalStorage();
+          if (!state.config.useSampleMusic && !state.media.musicUrl) {
+            AudioEngine.stopMusic();
+          }
+        });
+
+        // --- URL BASE Y REINICIO LOCAL ---
+        document.getElementById('inp-base-url').addEventListener('input', function (e) {
+          state.baseUrl = e.target.value;
+          saveToLocalStorage();
+        });
+
+        document.getElementById('btn-reset-all-config').addEventListener('click', function () {
+          state.config = Object.assign({}, DEFAULT_CONFIG);
+          state.guest = { name: 'Sofía', passes: 'Válido para 2 personas', note: '' };
+          state.baseUrl = getDetectedBaseUrl();
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+          syncInputsFromState();
+          renderLivePreview(true);
+          showToast('Datos restablecidos a valores iniciales', '↺');
+        });
+
+        // --- GENERADORES (UNO POR UNO Y POR LOTE) ---
+        document.getElementById('inp-guest-name').addEventListener('input', function (e) {
+          state.guest.name = e.target.value;
+          saveToLocalStorage();
+          updatePreviewTextInPlace();
+        });
+        document.getElementById('inp-guest-passes').addEventListener('input', function (e) {
+          state.guest.passes = e.target.value;
+          saveToLocalStorage();
+          updatePreviewTextInPlace();
+        });
+        document.getElementById('inp-guest-note').addEventListener('input', function (e) {
+          state.guest.note = e.target.value;
+          saveToLocalStorage();
+          updatePreviewTextInPlace();
+        });
+
+        const genTabSingle = document.getElementById('gen-tab-single');
+        const genTabBatch = document.getElementById('gen-tab-batch');
+        const genPanelSingle = document.getElementById('gen-panel-single');
+        const genPanelBatch = document.getElementById('gen-panel-batch');
+
+        genTabSingle.addEventListener('click', function () {
+          genPanelSingle.classList.remove('hidden');
+          genPanelBatch.classList.add('hidden');
+          genTabSingle.className = 'py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-white text-[#052e19] shadow-sm transition';
+          genTabBatch.className = 'py-2 rounded-xl text-xs sm:text-sm font-bold text-emerald-800 hover:text-[#052e19] transition';
+        });
+        genTabBatch.addEventListener('click', function () {
+          genPanelBatch.classList.remove('hidden');
+          genPanelSingle.classList.add('hidden');
+          genTabBatch.className = 'py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-white text-[#052e19] shadow-sm transition';
+          genTabSingle.className = 'py-2 rounded-xl text-xs sm:text-sm font-bold text-emerald-800 hover:text-[#052e19] transition';
+        });
+
+        document.getElementById('btn-generate-single').addEventListener('click', function () {
+          const gName = (document.getElementById('inp-guest-name').value || '').trim() || 'Invitado Especial';
+          const gPasses = (document.getElementById('inp-guest-passes').value || '').trim();
+          const gNote = (document.getElementById('inp-guest-note').value || '').trim();
+
+          state.guest = { name: gName, passes: gPasses, note: gNote };
+          saveToLocalStorage();
+          updatePreviewTextInPlace();
+
+          const url = buildInvitationLink(gName, gPasses, gNote);
+          document.getElementById('single-result-guest-label').textContent = gName;
+          document.getElementById('single-result-url').value = url;
+          document.getElementById('single-result-box').classList.remove('hidden');
+          FXCanvas.burstConfetti(48);
+          showToast('¡Invitación generada para ' + gName + '!', '✨');
+        });
+
+        document.getElementById('btn-single-copy').addEventListener('click', function () {
+          const url = document.getElementById('single-result-url').value;
+          if (copyTextToClipboard(url)) {
+            showToast('Enlace copiado al portapapeles', '📋');
+          } else {
+            showToast('Copia el enlace desde el recuadro', 'ℹ️');
+          }
+        });
+
+        document.getElementById('btn-single-preview').addEventListener('click', function () {
+          enterGuestExperience(state.guest, true);
+        });
+
+        document.getElementById('btn-single-whatsapp').addEventListener('click', function () {
+          const url = document.getElementById('single-result-url').value;
+          const gName = state.guest.name || 'Amigo';
+          window.open(buildWhatsAppShareUrl(gName, url), '_blank', 'noopener,noreferrer');
+        });
+
+        document.getElementById('btn-batch-example').addEventListener('click', function () {
+          document.getElementById('inp-batch-list').value =
+            'Sofía Martínez, 2 personas\nMateo Rojas, 3 personas\nFamilia Pérez, 4 personas\nTía Lucía, 1 persona\nValentina Gómez, 2 personas';
+        });
+
+        document.getElementById('btn-generate-batch').addEventListener('click', function () {
+          const raw = document.getElementById('inp-batch-list').value || '';
+          const lines = raw.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+
+          if (!lines.length) {
+            showToast('Escribe o pega al menos un invitado primero', '📝');
+            return;
+          }
+
+          state.batchItems = lines.map(function (line, idx) {
+            const parts = line.split(',');
+            const name = (parts[0] || '').trim();
+            const passes = parts.slice(1).join(',').trim();
+            return {
+              id: idx,
+              name: name || ('Invitado ' + (idx + 1)),
+              passes: passes,
+              url: buildInvitationLink(name, passes, ''),
+              sent: false
+            };
+          });
+
+          renderBatchResults();
+          FXCanvas.burstConfetti(60);
+          showToast('¡' + state.batchItems.length + ' invitaciones listas!', '🚀');
+        });
+
+        // Botones de prueba en cabecera y barra de vista previa
+        document.getElementById('btn-header-test-envelope').addEventListener('click', function () {
+          enterGuestExperience(state.guest, true);
+        });
+        document.getElementById('btn-preview-envelope').addEventListener('click', function () {
+          enterGuestExperience(state.guest, true);
+        });
+        document.getElementById('btn-preview-cake').addEventListener('click', openCakeModal);
+        document.getElementById('btn-preview-sound').addEventListener('click', function () {
+          AudioEngine.toggleMute();
+        });
+      }
+
+      function renderBatchResults() {
+        const wrapper = document.getElementById('batch-results-wrapper');
+        const listEl = document.getElementById('batch-results-list');
+        const counterEl = document.getElementById('batch-counter');
+
+        wrapper.classList.remove('hidden');
+        const sentCount = state.batchItems.filter(function (item) { return item.sent; }).length;
+        counterEl.textContent = 'Enviados: ' + sentCount + ' de ' + state.batchItems.length;
+
+        listEl.innerHTML = '';
+        state.batchItems.forEach(function (item) {
+          const row = document.createElement('div');
+          row.className = 'p-3 rounded-2xl border-2 transition flex flex-col gap-2 ' +
+            (item.sent ? 'bg-emerald-50/90 border-emerald-400' : 'bg-white border-slate-200');
+
+          row.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="font-extrabold text-sm text-[#052e19] truncate">${escapeHtml(item.name)}</div>
+                ${item.passes ? `<div class="text-[11px] font-bold text-slate-500">🎟️ ${escapeHtml(item.passes)}</div>` : ''}
+              </div>
+              <button type="button" data-act="toggle-sent" title="Marcar o desmarcar enviado"
+                class="shrink-0 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full transition cursor-pointer ${item.sent ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-500'}">
+                ${item.sent ? '✅ Enviado' : 'Pendiente'}
+              </button>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button type="button" data-act="copy" class="py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs transition active:scale-95">
+                📋 Copiar
+              </button>
+              <button type="button" data-act="preview" class="py-1.5 px-2 rounded-xl bg-yellow-300 hover:bg-yellow-400 text-[#052e19] font-extrabold text-xs transition active:scale-95">
+                ✉️ Probar
+              </button>
+              <button type="button" data-act="wa" class="py-1.5 px-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs transition active:scale-95">
+                💬 WhatsApp
+              </button>
+            </div>
+          `;
+
+          row.querySelector('[data-act="toggle-sent"]').addEventListener('click', function () {
+            item.sent = !item.sent;
+            renderBatchResults();
+          });
+
+          row.querySelector('[data-act="copy"]').addEventListener('click', function () {
+            if (copyTextToClipboard(item.url)) {
+              item.sent = true;
+              renderBatchResults();
+              showToast('Enlace de ' + item.name + ' copiado', '✅');
+            }
+          });
+
+          row.querySelector('[data-act="preview"]').addEventListener('click', function () {
+            enterGuestExperience({ name: item.name, passes: item.passes, note: '' }, true);
+          });
+
+          row.querySelector('[data-act="wa"]').addEventListener('click', function () {
+            item.sent = true;
+            renderBatchResults();
+            window.open(buildWhatsAppShareUrl(item.name, item.url), '_blank', 'noopener,noreferrer');
+          });
+
+          listEl.appendChild(row);
+        });
+      }
+
+      /* ===================================================================
+         15. INICIALIZACIÓN (MODO EDITOR VS MODO INVITADO POR URL)
+         =================================================================== */
+      function initApp() {
+        AudioEngine.init();
+        FXCanvas.init();
+        state.baseUrl = getDetectedBaseUrl();
+
+        // Eventos del sobre 3D, mute flotante y modal de pastel
+        document.getElementById('interactive-envelope').addEventListener('click', triggerOpenEnvelope);
+        document.getElementById('interactive-envelope').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerOpenEnvelope();
+          }
+        });
+        document.getElementById('btn-open-envelope').addEventListener('click', triggerOpenEnvelope);
+        document.getElementById('btn-guest-mute').addEventListener('click', function () {
+          AudioEngine.toggleMute();
+        });
+        document.getElementById('btn-back-to-editor').addEventListener('click', exitGuestToEditor);
+
+        document.getElementById('btn-close-cake').addEventListener('click', closeCakeModal);
+        document.getElementById('btn-cake-done').addEventListener('click', closeCakeModal);
+        document.getElementById('btn-blow-all-candles').addEventListener('click', blowAllCandles);
+        document.getElementById('btn-relight-candles').addEventListener('click', buildCakeCandles);
+
+        // Detectar parámetros de invitación en la URL (?d=... o ?invitado=...)
+        const params = new URLSearchParams(window.location.search);
+        const forceEditor = window.location.hash === '#editor';
+        const packedParam = params.get('d');
+        const legacyGuest = params.get('invitado');
+
+        if ((packedParam || legacyGuest) && !forceEditor) {
+          state.mode = 'guest';
+
+          if (packedParam) {
+            try {
+              const decoded = JSON.parse(fromBase64Url(packedParam));
+              const unpacked = unpackLinkPayload(decoded);
+              if (unpacked) {
+                state.config = Object.assign({}, DEFAULT_CONFIG, unpacked.config);
+                state.guest = unpacked.guest;
+              }
+            } catch (e) {
+              state.config = Object.assign({}, DEFAULT_CONFIG);
+            }
+          }
+
+          if (legacyGuest) {
+            state.guest = {
+              name: legacyGuest,
+              passes: params.get('pases') || state.guest.passes || '',
+              note: params.get('nota') || state.guest.note || ''
+            };
+          }
+
+          enterGuestExperience(state.guest, false);
+        } else {
+          state.mode = 'editor';
+          loadFromLocalStorage();
+          if (!state.baseUrl) state.baseUrl = getDetectedBaseUrl();
+
+          document.getElementById('editor-view').classList.remove('hidden');
+          document.getElementById('guest-view').classList.add('hidden');
+
+          syncInputsFromState();
+          bindEditorEvents();
+          renderLivePreview(true);
+        }
+
+        startCountdownInterval();
+        detectLocalFolderMedia();
+      }
+
+      window.addEventListener('DOMContentLoaded', initApp);
+    })();
+  </script>
+</body>
+</html>
